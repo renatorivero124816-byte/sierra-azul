@@ -1,4 +1,4 @@
-# Publicar SIERRA AZUL
+# Publicar SIERRAZUL
 
 Recomendación: Vercel para publicar y Supabase para guardar cambios del administrador.
 
