@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIERRA AZUL | Portal Residencial</title>
+  <link rel="preconnect" href="https://images.unsplash.com" />
+  <link rel="preconnect" href="https://unpkg.com" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <button class="admin-launch" type="button" aria-label="Abrir administrador">
+    <i data-lucide="lock-keyhole"></i>
+  </button>
+
+  <aside class="admin-panel" aria-hidden="true">
+    <div class="admin-panel-head">
+      <div>
+        <p class="eyebrow">Administrador</p>
+        <h2>Editar SIERRA AZUL</h2>
+      </div>
+      <button class="admin-close" type="button" aria-label="Cerrar administrador">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <form class="admin-login">
+      <label>
+        Contraseña
+        <input type="password" name="password" autocomplete="current-password" placeholder="Palabra clave" />
+      </label>
+      <button type="submit">Entrar</button>
+      <p class="admin-message" role="status"></p>
+    </form>
+
+    <div class="admin-tools" hidden>
+      <p class="admin-note">Modo edición activo. Los residentes no ven botones para subir fotos ni mover avances.</p>
+      <div class="admin-tool">
+        <strong>Imagen de portada</strong>
+        <label>Reemplazar portada <input type="file" accept="image/*" data-admin-bg=".site-header" /></label>
+      </div>
+      <div class="admin-tool-list"></div>
+      <button class="admin-logout" type="button">Salir del administrador</button>
+    </div>
+  </aside>
+
+  <header class="site-header" id="inicio">
+    <nav class="topbar" aria-label="Navegación principal">
+      <a class="brand" href="#inicio">
+        <span class="brand-mark">SA</span>
+        <span>
+          <strong>SIERRA AZUL</strong>
+          <small>Administración Condominial</small>
+        </span>
+      </a>
+      <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false">
+        <i data-lucide="menu"></i>
+      </button>
+      <div class="nav-links">
+        <a href="#torres">Torres</a>
+        <a href="#proyectos">Proyectos</a>
+        <a href="#equipos">Equipos</a>
+        <a href="#amenidades">Amenidades</a>
+        <a href="#plan">Plan futuro</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-content">
+        <p class="eyebrow">Portal privado para residentes</p>
+        <h1>SIERRA AZUL, gestión elegante para un condominio en movimiento.</h1>
+        <p class="hero-copy">
+          Un espacio central para visualizar avances, fotografías de amenidades,
+          equipos operativos, seguridad y el plan cronológico de mantenimiento.
+        </p>
+        <div class="hero-actions">
+          <a class="primary-action" href="#proyectos">Ver proyectos activos</a>
+          <a class="secondary-action" href="#torres">Explorar torres</a>
+        </div>
+      </div>
+      <div class="hero-status" aria-label="Resumen del condominio">
+        <span><strong>2</strong> torres</span>
+        <span><strong>SIERRA</strong> y AZUL</span>
+        <span><strong>8</strong> proyectos activos</span>
+      </div>
+    </section>
+  </header>
+
+  <main>
+    <section class="section intro-band">
+      <div class="section-heading">
+        <p class="eyebrow">Vista general</p>
+        <h2>Todo SIERRA AZUL desde una sola página.</h2>
+      </div>
+      <div class="metric-grid">
+        <article>
+          <i data-lucide="building-2"></i>
+          <strong>Torres SIERRA y AZUL</strong>
+          <span>Galerías, información y avances por torre.</span>
+        </article>
+        <article>
+          <i data-lucide="clipboard-check"></i>
+          <strong>Mantenimiento vivo</strong>
+          <span>Obras activas, responsables, fechas, estatus y fotografías.</span>
+        </article>
+        <article>
+          <i data-lucide="shield-check"></i>
+          <strong>Operación diaria</strong>
+          <span>Administración, limpieza, mantenimiento y seguridad.</span>
+        </article>
+        <article>
+          <i data-lucide="calendar-clock"></i>
+          <strong>Plan cronológico</strong>
+          <span>Prioridades futuras para presupuestar y comunicar.</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="torres">
+      <div class="section-heading split">
+        <div>
+          <p class="eyebrow">Torres</p>
+          <h2>Torres SIERRA y AZUL.</h2>
+        </div>
+        <p>Cada torre puede mostrar información, avances, fotografías y evidencias de mantenimiento.</p>
+      </div>
+
+      <div class="tower-grid">
+        <article class="tower-feature">
+          <img data-edit-image="Torre SIERRA" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80" alt="Vista exterior de torre residencial moderna" />
+          <div>
+            <p class="eyebrow">Torre</p>
+            <h3>SIERRA</h3>
+            <p>Acceso principal, lobby, circulaciones, elevadores y áreas comunes de la torre SIERRA.</p>
+            <a href="#galeria-a">Ver amenidades</a>
+          </div>
+        </article>
+        <article class="tower-feature">
+          <img data-edit-image="Torre AZUL" src="https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80" alt="Interior elegante de torre residencial" />
+          <div>
+            <p class="eyebrow">Torre</p>
+            <h3>AZUL</h3>
+            <p>Lobby, pasillos, elevadores, accesos y zonas comunes de la torre AZUL.</p>
+            <a href="#galeria-a">Ver amenidades</a>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-heading" id="galeria-a">
+        <p class="eyebrow">Conjunto A</p>
+        <h3>Amenidades</h3>
+      </div>
+      <div class="gallery-strip" aria-label="Galería de amenidades del Conjunto A">
+        <img data-edit-image="Galería Conjunto A - Alberca" src="https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?auto=format&fit=crop&w=900&q=80" alt="Alberca residencial" />
+        <img data-edit-image="Galería Conjunto A - Jardín" src="https://images.unsplash.com/photo-1591825729269-caeb344f6df2?auto=format&fit=crop&w=900&q=80" alt="Jardín residencial" />
+        <img data-edit-image="Galería Conjunto A - GYM" src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=80" alt="Gimnasio equipado" />
+        <img data-edit-image="Galería Conjunto A - Lobby" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80" alt="Lobby residencial" />
+      </div>
+    </section>
+
+    <section class="section project-section" id="proyectos">
+      <div class="section-heading split">
+        <div>
+          <p class="eyebrow">Mantenimiento actual</p>
+          <h2>Proyectos en curso con seguimiento claro.</h2>
+        </div>
+        <button class="icon-button" type="button" title="Agregar proyecto" data-admin-only>
+          <i data-lucide="plus"></i>
+        </button>
+      </div>
+
+      <div class="project-board">
+        <article class="project-card active" data-project-id="azoteas">
+          <span class="status project-status">En proceso</span>
+          <h3>Impermeabilización de azoteas</h3>
+          <p>Aplicación de sellador, revisión de bajantes y pruebas de humedad en SIERRA y AZUL.</p>
+          <div class="progress"><span style="width: 68%"></span></div>
+          <footer><span class="progress-value">68%</span><span>Entrega: Jun 2026</span></footer>
+          <div class="admin-progress" data-admin-only></div>
+          <div class="upload-pair">
+            <label>Antes <input type="file" accept="image/*" multiple data-max-files="20" data-project-gallery="before" /></label>
+            <label>Después <input type="file" accept="image/*" multiple data-max-files="20" data-project-gallery="after" /></label>
+          </div>
+          <div class="project-photo-preview" data-gallery-preview="before"></div>
+          <div class="project-photo-preview" data-gallery-preview="after"></div>
+        </article>
+        <article class="project-card" data-project-id="pasillos">
+          <span class="status project-status">Programado</span>
+          <h3>Pintura de pasillos</h3>
+          <p>Renovación de muros, señalética y protecciones en niveles comunes.</p>
+          <div class="progress"><span style="width: 25%"></span></div>
+          <footer><span class="progress-value">25%</span><span>Inicio: Jul 2026</span></footer>
+          <div class="admin-progress" data-admin-only></div>
+          <div class="upload-pair">
+            <label>Antes <input type="file" accept="image/*" multiple data-max-files="20" data-project-gallery="before" /></label>
+            <label>Después <input type="file" accept="image/*" multiple data-max-files="20" data-project-gallery="after" /></label>
+          </div>
+          <div class="project-photo-preview" data-gallery-preview="before"></div>
+          <div class="project-photo-preview" data-gallery-preview="after"></div>
+        </article>
+        <article class="project-card" data-project-id="elevadores">
+          <span class="status project-status">Revisión</span>
+          <h3>Mantenimiento de elevadores</h3>
+          <p>Diagnóstico preventivo, bitácora de servicio y validación con proveedor certificado.</p>
+          <div class="progress"><span style="width: 42%"></span></div>
+          <footer><span class="progress-value">42%</span><span>Mensual</span></footer>
+          <div class="admin-progress" data-admin-only></div>
+          <div class="upload-pair">
+            <label>Antes <input type="file" accept="image/*" multiple data-max-files="20" data-project-gallery="before" /></label>
+            <label>Después <input type="file" accept="image/*" multiple data-max-files="20" data-project-gallery="after" /></label>
+          </div>
+          <div class="project-photo-preview" data-gallery-preview="before"></div>
+          <div class="project-photo-preview" data-gallery-preview="after"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="equipos">
+      <div class="section-heading">
+        <p class="eyebrow">Equipos operativos</p>
+        <h2>Personas responsables que sostienen el edificio.</h2>
+      </div>
+      <div class="team-grid">
+        <article data-team-id="mantenimiento">
+          <i data-lucide="wrench"></i>
+          <h3>Mantenimiento</h3>
+          <p>Responsables de reparaciones, rondines técnicos, proveedores y bitácoras.</p>
+          <div class="people-list" data-people-list="mantenimiento">
+            <div class="person-card" data-person-id="mantenimiento-lead" data-default-name="Miguel Cardona" data-default-role="Jefe de mantenimiento">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Miguel Cardona</strong><span>Jefe de mantenimiento</span></div>
+            </div>
+            <div class="person-card" data-person-id="mantenimiento-1" data-default-name="Héctor Díaz" data-default-role="Empleado a cargo 1">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Héctor Díaz</strong><span>Empleado a cargo 1</span></div>
+            </div>
+            <div class="person-card" data-person-id="mantenimiento-2" data-default-name="Empleado a cargo 2" data-default-role="Técnico de mantenimiento">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Empleado a cargo 2</strong><span>Técnico de mantenimiento</span></div>
+            </div>
+            <div class="person-card" data-person-id="mantenimiento-3" data-default-name="Empleado a cargo 3" data-default-role="Técnico de mantenimiento">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Empleado a cargo 3</strong><span>Técnico de mantenimiento</span></div>
+            </div>
+          </div>
+        </article>
+        <article data-team-id="limpieza">
+          <i data-lucide="sparkles"></i>
+          <h3>Limpieza</h3>
+          <p>Equipo encargado de áreas comunes, lobbies, amenidades y circulaciones.</p>
+          <div class="people-list" data-people-list="limpieza">
+            <div class="person-card" data-person-id="limpieza-lead" data-default-name="Lucero Alvarado" data-default-role="Supervisora de limpieza">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Lucero Alvarado</strong><span>Supervisora de limpieza</span></div>
+            </div>
+            <div class="person-card" data-person-id="limpieza-1" data-default-name="Empleado de limpieza 1" data-default-role="Limpieza">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Empleado de limpieza 1</strong><span>Limpieza</span></div>
+            </div>
+            <div class="person-card" data-person-id="limpieza-2" data-default-name="Empleado de limpieza 2" data-default-role="Limpieza">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Empleado de limpieza 2</strong><span>Limpieza</span></div>
+            </div>
+          </div>
+        </article>
+        <article data-team-id="administracion">
+          <i data-lucide="briefcase-business"></i>
+          <h3>Administración</h3>
+          <p>Gestión de cuotas, comunicados, presupuestos, contratos y atención a residentes.</p>
+          <div class="people-list" data-people-list="administracion">
+            <div class="person-card" data-person-id="admin-lucero" data-default-name="Lucero Alvarado" data-default-role="Administradora">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Lucero Alvarado</strong><span>Administradora</span></div>
+            </div>
+            <div class="person-card" data-person-id="admin-renato" data-default-name="Renato Rivero" data-default-role="Administrador auxiliar">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Renato Rivero</strong><span>Administrador auxiliar</span></div>
+            </div>
+          </div>
+        </article>
+        <article data-team-id="seguridad">
+          <i data-lucide="shield"></i>
+          <h3>Seguridad</h3>
+          <p>Alicia es empleada directa de SIERRA AZUL. Guardias frecuentes provienen de Gescorp.</p>
+          <div class="people-list" data-people-list="seguridad">
+            <div class="person-card" data-person-id="seguridad-alicia" data-default-name="Alicia" data-default-role="Jefa de seguridad">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Alicia</strong><span>Jefa de seguridad</span></div>
+            </div>
+            <div class="person-card" data-person-id="seguridad-1" data-default-name="Guardia Gescorp 1" data-default-role="Guardia frecuente">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Guardia Gescorp 1</strong><span>Guardia frecuente</span></div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section amenity-section" id="amenidades">
+      <div class="section-heading split">
+        <div>
+          <p class="eyebrow">Amenidades</p>
+          <h2>Servicios que elevan la vida diaria.</h2>
+        </div>
+        <p>Selecciona una amenidad para ver su información, fotos y lineamientos.</p>
+      </div>
+      <div class="amenity-grid">
+        <a class="amenity-card" href="#alberca">
+          <img data-edit-image="Amenidad - Alberca" src="https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?auto=format&fit=crop&w=900&q=80" alt="Alberca residencial" />
+          <span>Alberca</span>
+        </a>
+        <a class="amenity-card" href="#jardin">
+          <img data-edit-image="Amenidad - Jardín" src="https://images.unsplash.com/photo-1591825729269-caeb344f6df2?auto=format&fit=crop&w=900&q=80" alt="Jardín residencial" />
+          <span>Jardín</span>
+        </a>
+        <a class="amenity-card" href="#gym">
+          <img data-edit-image="Amenidad - GYM" src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=80" alt="Gimnasio equipado" />
+          <span>GYM</span>
+        </a>
+        <a class="amenity-card" href="#lobby">
+          <img data-edit-image="Amenidad - Lobby" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80" alt="Lobby residencial" />
+          <span>Lobby</span>
+        </a>
+        <a class="amenity-card coming-soon" href="#bar">
+          <img data-edit-image="Amenidad - Bar deportivo y billar" src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=900&q=80" alt="Bar con sala de deportes y mesa de billar" />
+          <span>Apertura próxima: bar deportivo y billar</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section amenity-detail" id="alberca" data-amenity-id="alberca" data-amenity-name="Alberca">
+      <div class="section-heading split">
+        <div>
+          <p class="eyebrow">Amenidad</p>
+          <h2>Alberca.</h2>
+        </div>
+        <a class="secondary-link" href="#amenidades">Volver a amenidades</a>
+      </div>
+      <div class="amenity-detail-grid">
+        <div>
+          <div class="amenity-gallery" data-amenity-gallery>
+            <img data-edit-image="Alberca - Foto 1" src="https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?auto=format&fit=crop&w=900&q=80" alt="Vista de alberca residencial" />
+            <img data-edit-image="Alberca - Foto 2" src="https://images.unsplash.com/photo-1604014237800-1c9102c219da?auto=format&fit=crop&w=900&q=80" alt="Área de descanso junto a alberca" />
+            <img data-edit-image="Alberca - Foto 3" src="https://images.unsplash.com/photo-1572331165267-854da2b10ccc?auto=format&fit=crop&w=900&q=80" alt="Alberca con camastros" />
+          </div>
+          <label class="profile-upload amenity-upload">Fotos de alberca <input type="file" accept="image/*" multiple data-max-files="12" data-amenity-upload /></label>
+        </div>
+        <div class="rules-panel">
+          <h3>Reglamento</h3>
+          <ul>
+            <li>Uso exclusivo para residentes e invitados registrados.</li>
+            <li>Menores de edad siempre acompañados por un adulto.</li>
+            <li>No ingresar con vidrio, alimentos dentro del agua o objetos peligrosos.</li>
+            <li>Respetar horarios, aforo y limpieza del área.</li>
+          </ul>
+          <h3>Lineamientos</h3>
+          <ul>
+            <li>Usar traje de baño adecuado y toalla personal.</li>
+            <li>Reportar cualquier daño o incidente a administración.</li>
+            <li>Evitar música alta o actividades que afecten a otros residentes.</li>
+          </ul>
+          <label class="profile-upload rules-editor">
+            Editar reglamento y lineamientos
+            <textarea data-amenity-rules-editor rows="8"></textarea>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <section class="section amenity-detail" id="jardin" data-amenity-id="jardin" data-amenity-name="Jardín">
+      <div class="section-heading split">
+        <div><p class="eyebrow">Amenidad</p><h2>Jardín.</h2></div>
+        <a class="secondary-link" href="#amenidades">Volver a amenidades</a>
+      </div>
+      <div class="amenity-detail-grid">
+        <div>
+          <div class="amenity-gallery" data-amenity-gallery>
+            <img data-edit-image="Jardín - Foto 1" src="https://images.unsplash.com/photo-1591825729269-caeb344f6df2?auto=format&fit=crop&w=900&q=80" alt="Jardín residencial" />
+            <img data-edit-image="Jardín - Foto 2" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80" alt="Terraza ajardinada" />
+            <img data-edit-image="Jardín - Foto 3" src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=900&q=80" alt="Área verde residencial" />
+          </div>
+          <label class="profile-upload amenity-upload">Fotos de jardín <input type="file" accept="image/*" multiple data-max-files="12" data-amenity-upload /></label>
+        </div>
+        <div class="rules-panel">
+          <h3>Reglamento</h3>
+          <ul>
+            <li>Conservar limpia el área y recoger pertenencias al retirarse.</li>
+            <li>Evitar dañar plantas, mobiliario o sistema de riego.</li>
+            <li>Los eventos deben ser autorizados por administración.</li>
+          </ul>
+          <h3>Lineamientos</h3>
+          <ul>
+            <li>Respetar horarios de uso y descanso de residentes.</li>
+            <li>No introducir mobiliario externo sin autorización.</li>
+          </ul>
+          <label class="profile-upload rules-editor">Editar reglamento y lineamientos<textarea data-amenity-rules-editor rows="8"></textarea></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="section amenity-detail" id="gym" data-amenity-id="gym" data-amenity-name="GYM">
+      <div class="section-heading split">
+        <div><p class="eyebrow">Amenidad</p><h2>GYM.</h2></div>
+        <a class="secondary-link" href="#amenidades">Volver a amenidades</a>
+      </div>
+      <div class="amenity-detail-grid">
+        <div>
+          <div class="amenity-gallery" data-amenity-gallery>
+            <img data-edit-image="GYM - Foto 1" src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=80" alt="Gimnasio equipado" />
+            <img data-edit-image="GYM - Foto 2" src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=900&q=80" alt="Área de cardio" />
+            <img data-edit-image="GYM - Foto 3" src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=900&q=80" alt="Pesas de gimnasio" />
+          </div>
+          <label class="profile-upload amenity-upload">Fotos de GYM <input type="file" accept="image/*" multiple data-max-files="12" data-amenity-upload /></label>
+        </div>
+        <div class="rules-panel">
+          <h3>Reglamento</h3>
+          <ul>
+            <li>Usar ropa deportiva y toalla personal.</li>
+            <li>Limpiar los equipos después de usarlos.</li>
+            <li>No ingresar menores sin supervisión autorizada.</li>
+          </ul>
+          <h3>Lineamientos</h3>
+          <ul>
+            <li>Respetar turnos, horarios y uso responsable de equipos.</li>
+            <li>Reportar fallas o daños a administración.</li>
+          </ul>
+          <label class="profile-upload rules-editor">Editar reglamento y lineamientos<textarea data-amenity-rules-editor rows="8"></textarea></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="section amenity-detail" id="lobby" data-amenity-id="lobby" data-amenity-name="Lobby">
+      <div class="section-heading split">
+        <div><p class="eyebrow">Amenidad</p><h2>Lobby.</h2></div>
+        <a class="secondary-link" href="#amenidades">Volver a amenidades</a>
+      </div>
+      <div class="amenity-detail-grid">
+        <div>
+          <div class="amenity-gallery" data-amenity-gallery>
+            <img data-edit-image="Lobby - Foto 1" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80" alt="Lobby residencial" />
+            <img data-edit-image="Lobby - Foto 2" src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=900&q=80" alt="Recepción residencial" />
+            <img data-edit-image="Lobby - Foto 3" src="https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=900&q=80" alt="Sala de espera residencial" />
+          </div>
+          <label class="profile-upload amenity-upload">Fotos de lobby <input type="file" accept="image/*" multiple data-max-files="12" data-amenity-upload /></label>
+        </div>
+        <div class="rules-panel">
+          <h3>Reglamento</h3>
+          <ul>
+            <li>Mantener libre el paso y evitar obstruir accesos.</li>
+            <li>Registrar visitantes conforme al protocolo de seguridad.</li>
+            <li>No dejar paquetes u objetos personales sin autorización.</li>
+          </ul>
+          <h3>Lineamientos</h3>
+          <ul>
+            <li>Conservar un ambiente ordenado y silencioso.</li>
+            <li>Reportar incidencias en recepción o administración.</li>
+          </ul>
+          <label class="profile-upload rules-editor">Editar reglamento y lineamientos<textarea data-amenity-rules-editor rows="8"></textarea></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="section amenity-detail" id="bar" data-amenity-id="bar" data-amenity-name="Bar deportivo y billar">
+      <div class="section-heading split">
+        <div><p class="eyebrow">Amenidad</p><h2>Bar deportivo y billar.</h2></div>
+        <a class="secondary-link" href="#amenidades">Volver a amenidades</a>
+      </div>
+      <div class="amenity-detail-grid">
+        <div>
+          <div class="amenity-gallery" data-amenity-gallery>
+            <img data-edit-image="Bar deportivo - Foto 1" src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=900&q=80" alt="Bar deportivo" />
+            <img data-edit-image="Bar deportivo - Foto 2" src="https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?auto=format&fit=crop&w=900&q=80" alt="Mesa de billar" />
+            <img data-edit-image="Bar deportivo - Foto 3" src="https://images.unsplash.com/photo-1575444758702-4a6b9222336e?auto=format&fit=crop&w=900&q=80" alt="Sala para ver deportes" />
+          </div>
+          <label class="profile-upload amenity-upload">Fotos de bar deportivo <input type="file" accept="image/*" multiple data-max-files="12" data-amenity-upload /></label>
+        </div>
+        <div class="rules-panel">
+          <h3>Reglamento</h3>
+          <ul>
+            <li>Amenidad en apertura próxima, sujeta a calendario de administración.</li>
+            <li>Uso con reservación y cumplimiento de aforo.</li>
+            <li>El uso de mesa de billar y pantallas debe respetar turnos.</li>
+          </ul>
+          <h3>Lineamientos</h3>
+          <ul>
+            <li>Evitar ruido excesivo y cuidar mobiliario.</li>
+            <li>Los invitados deberán registrarse conforme a protocolo.</li>
+          </ul>
+          <label class="profile-upload rules-editor">Editar reglamento y lineamientos<textarea data-amenity-rules-editor rows="8"></textarea></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="plan">
+      <div class="section-heading">
+        <p class="eyebrow">Plan de mantenimiento futuro</p>
+        <h2>Línea cronológica de mantenimiento.</h2>
+      </div>
+      <div class="timeline">
+        <article>
+          <span>Mayo 2026</span>
+          <h3>Diagnóstico general</h3>
+          <p>Levantamiento de necesidades por torre, amenidades, proveedores y prioridades urgentes.</p>
+        </article>
+        <article>
+          <span>Junio 2026</span>
+          <h3>Azoteas e impermeabilización</h3>
+          <p>Corrección de filtraciones, pruebas de humedad y evidencia fotográfica antes/después.</p>
+        </article>
+        <article>
+          <span>Julio 2026</span>
+          <h3>Pasillos, pintura y señalética</h3>
+          <p>Renovación visual de áreas comunes, rutas de evacuación y señalización por nivel.</p>
+        </article>
+        <article>
+          <span>Agosto 2026</span>
+          <h3>Elevadores y accesos</h3>
+          <p>Bitácora de proveedor, revisión preventiva y mejora de protocolos de acceso.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>
+      <strong>SIERRA AZUL</strong>
+      <span>Portal de administración y mantenimiento condominial.</span>
+    </div>
+    <a href="#inicio">Volver arriba</a>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="cloud-sync.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
