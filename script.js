@@ -636,6 +636,657 @@ function buildAdminPanelTools() {
   wireImageReplacement();
 }
 
+function restoreSavedChanges() {
+  if (state.heroImage) {
+    setHeroImage(state.heroImage);
+  }
+
+  document.querySelectorAll("[data-edit-image]").forEach((image) => {
+    const saved = state[`image:${image.dataset.imageKey}`];
+    if (saved) image.src = saved;
+  });
+
+  document.querySelectorAll(".project-card").forEach((card) => {
+    const projectId = card.dataset.projectId;
+    const savedName = state[`project:${projectId}:name`];
+    if (savedName) setProjectName(card, savedName);
+    const savedProgress = state[`progress:${projectId}`];
+    setProjectProgress(card, savedProgress ?? Number.parseInt(card.querySelector(".progress-value")?.textContent || "0", 10));
+    renderPreview(card.querySelector('[data-gallery-preview="before"]'), state[`project:${projectId}:before`] || []);
+    renderPreview(card.querySelector('[data-gallery-preview="after"]'), state[`project:${projectId}:after`] || []);
+  });
+
+  document.querySelectorAll(".person-card").forEach((card) => {
+    const id = card.dataset.personId;
+    const name = state[`person:${id}:name`] || card.dataset.defaultName;
+    const role = state[`person:${id}:role`] || card.dataset.defaultRole;
+    const photo = state[`person:${id}:photo`];
+    setPerson(card, { name, role, photo });
+    const nameInput = card.querySelector("[data-person-name-input]");
+    const roleInput = card.querySelector("[data-person-role-input]");
+    if (nameInput) nameInput.value = name;
+    if (roleInput) roleInput.value = role;
+  });
+
+  document.querySelectorAll(".amenity-detail").forEach((section) => {
+    const id = section.dataset.amenityId;
+    const photos = state[`amenity:${id}:photos`];
+    const rules = state[`amenity:${id}:rules`];
+    if (photos?.length) renderAmenityGallery(section, photos);
+    if (rules) setAmenityRules(section, rules);
+    const editor = section.querySelector("[data-amenity-rules-editor]");
+    if (editor) editor.value = getAmenityRulesText(section);
+  });
+
+  document.querySelectorAll(".quote-card").forEach((card) => {
+    setQuotePdf(card, state[`quote:${card.dataset.quoteId}:pdf`]);
+  });
+}
+
+function buildAdminPanelTools() {
+  if (!adminToolList) return;
+  adminToolList.innerHTML = "";
+
+  const imageGroup = createAdminGroup("Imágenes principales");
+  document.querySelectorAll("[data-edit-image]").forEach((image) => {
+    if (image.closest(".amenity-section, .amenity-detail")) return;
+    imageGroup.appendChild(createImageTool(image.dataset.editImage, image.dataset.imageKey));
+  });
+  adminToolList.appendChild(imageGroup);
+
+  const projectGroup = createAdminGroup("Proyectos: avance y fotografías");
+  projectGroup.appendChild(createAddProjectTool());
+  document.querySelectorAll(".project-card").forEach((card) => {
+    projectGroup.appendChild(createProjectTool(card));
+  });
+  adminToolList.appendChild(projectGroup);
+
+  const quoteGroup = createAdminGroup("Cotizaciones: PDF por proveedor");
+  document.querySelectorAll(".quote-card").forEach((card) => {
+    quoteGroup.appendChild(createQuoteTool(card));
+  });
+  adminToolList.appendChild(quoteGroup);
+
+  const peopleGroup = createAdminGroup("Personal y responsables");
+  document.querySelectorAll(".person-card").forEach((card) => {
+    peopleGroup.appendChild(createPersonTool(card));
+  });
+  adminToolList.appendChild(peopleGroup);
+
+  wireAdminPersonTools();
+  wireAdminProjectTools();
+  wireAdminQuoteTools();
+  wireImageReplacement();
+}
+
+function setQuotePdf(card, quote) {
+  const control = card.querySelector(".quote-download");
+  const meta = card.querySelector(".quote-meta");
+  if (!control || !meta) return;
+
+  control.removeAttribute("download");
+  control.removeAttribute("href");
+
+  if (!quote?.data) {
+    control.removeAttribute("data-quote-viewer");
+    control.setAttribute("aria-disabled", "true");
+    control.classList.add("disabled");
+    control.textContent = "Sin PDF";
+    meta.textContent = "PDF pendiente de carga";
+    return;
+  }
+
+  control.dataset.quoteViewer = card.dataset.quoteId;
+  control.removeAttribute("aria-disabled");
+  control.classList.remove("disabled");
+  control.textContent = "Ver PDF";
+  meta.textContent = quote.name ? `Documento disponible: ${quote.name}` : "Documento disponible para visualizar";
+}
+
+(() => {
+  const shieldText = "Contenido privado de SIERRAZUL. Capturas, impresión y descarga no autorizada están restringidas.";
+  let shieldTimer;
+  let captureBlurTimer;
+
+  function createSecurityLayer() {
+    document.querySelector(".security-watermark")?.remove();
+
+    if (!document.querySelector(".security-shield")) {
+      const shield = document.createElement("div");
+      shield.className = "security-shield";
+      shield.setAttribute("aria-live", "polite");
+      shield.innerHTML = `<div><strong>SIERRAZUL</strong><span>${shieldText}</span></div>`;
+      document.body.appendChild(shield);
+    }
+  }
+
+  function showSecurityShield(message = shieldText) {
+    const shield = document.querySelector(".security-shield span");
+    if (shield) shield.textContent = message;
+    document.body.classList.add("security-alert");
+    window.clearTimeout(shieldTimer);
+    shieldTimer = window.setTimeout(() => {
+      document.body.classList.remove("security-alert");
+      if (shield) shield.textContent = shieldText;
+    }, 2200);
+  }
+
+  function blurForCapture() {
+    document.body.classList.add("security-capture");
+    window.clearTimeout(captureBlurTimer);
+    captureBlurTimer = window.setTimeout(() => {
+      document.body.classList.remove("security-capture");
+    }, 10000);
+  }
+
+  function isEditableTarget(target) {
+    return target?.closest?.("input, textarea, select, [contenteditable='true']");
+  }
+
+  function protectKeyboard(event) {
+    const key = event.key.toLowerCase();
+    const withControl = event.ctrlKey || event.metaKey;
+    const blockedCombo = withControl && ["p", "s", "u"].includes(key);
+    const blockedDevTools = key === "f12" || (withControl && event.shiftKey && ["i", "j", "c"].includes(key));
+
+    if (event.key === "PrintScreen") {
+      event.preventDefault();
+      navigator.clipboard?.writeText("Captura restringida por SIERRAZUL.").catch(() => {});
+      blurForCapture();
+      return;
+    }
+
+    if (blockedCombo || blockedDevTools) {
+      event.preventDefault();
+      showSecurityShield("Acción restringida. Este contenido es privado de SIERRAZUL.");
+    }
+  }
+
+  createSecurityLayer();
+
+  document.addEventListener("keydown", protectKeyboard, true);
+  document.addEventListener("keyup", (event) => {
+    if (event.key === "PrintScreen") {
+      navigator.clipboard?.writeText("Captura restringida por SIERRAZUL.").catch(() => {});
+      blurForCapture();
+    }
+  }, true);
+
+  document.addEventListener("contextmenu", (event) => {
+    if (isEditableTarget(event.target)) return;
+    event.preventDefault();
+    showSecurityShield("Clic derecho desactivado para proteger la información.");
+  }, true);
+
+  document.addEventListener("dragstart", (event) => {
+    event.preventDefault();
+  }, true);
+
+  document.addEventListener("copy", (event) => {
+    if (isEditableTarget(event.target)) return;
+    event.preventDefault();
+    showSecurityShield("Copiar contenido está restringido.");
+  }, true);
+
+  window.addEventListener("blur", () => {
+    if (!document.body.classList.contains("site-locked")) {
+      document.body.classList.add("security-paused");
+    }
+  });
+
+  window.addEventListener("focus", () => {
+    document.body.classList.remove("security-paused");
+  });
+
+  window.addEventListener("beforeprint", () => {
+    document.body.classList.add("security-printing");
+    showSecurityShield("Impresión restringida. Documento privado de SIERRAZUL.");
+  });
+
+  window.addEventListener("afterprint", () => {
+    document.body.classList.remove("security-printing");
+  });
+})();
+
+async function loadPdfLibrary() {
+  if (window.pdfjsLib) return window.pdfjsLib;
+  const library = await import("./assets/pdf.min.js");
+  window.pdfjsLib = library;
+  return library;
+}
+
+async function openPdfViewer(card, quote) {
+  const modal = document.querySelector(".pdf-modal");
+  const title = document.querySelector("[data-pdf-title]");
+  const message = document.querySelector("[data-pdf-message]");
+  const canvas = document.querySelector("[data-pdf-canvas]");
+  if (!modal) return;
+
+  modal.hidden = false;
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("panel-open");
+  title.textContent = `${card.dataset.category || "Cotización"} · ${card.dataset.provider || "Proveedor"}`;
+  message.textContent = "Cargando documento...";
+  canvas.hidden = true;
+
+  try {
+    const pdfjsLib = await loadPdfLibrary();
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "./assets/pdf.worker.min.js";
+    const data = dataUrlToUint8Array(quote.data);
+    activePdfDocument = await pdfjsLib.getDocument({ data }).promise;
+    activePdfPage = 1;
+    await renderPdfPage(1);
+  } catch {
+    activePdfDocument = null;
+    message.textContent = "No se pudo visualizar este PDF. Intenta cargarlo nuevamente desde el administrador.";
+  }
+}
+
+async function loadPdfLibrary() {
+  if (window.pdfjsLib) return window.pdfjsLib;
+  const library = await import("./assets/pdf.min.js");
+  window.pdfjsLib = library;
+  return library;
+}
+
+async function openPdfViewer(card, quote) {
+  const modal = document.querySelector(".pdf-modal");
+  const title = document.querySelector("[data-pdf-title]");
+  const message = document.querySelector("[data-pdf-message]");
+  const canvas = document.querySelector("[data-pdf-canvas]");
+  if (!modal) return;
+
+  modal.hidden = false;
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("panel-open");
+  title.textContent = `${card.dataset.category || "Cotización"} · ${card.dataset.provider || "Proveedor"}`;
+  message.textContent = "Cargando documento...";
+  canvas.hidden = true;
+
+  try {
+    const pdfjsLib = await loadPdfLibrary();
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "./assets/pdf.worker.min.js";
+    const data = dataUrlToUint8Array(quote.data);
+    activePdfDocument = await pdfjsLib.getDocument({ data }).promise;
+    activePdfPage = 1;
+    await renderPdfPage(1);
+  } catch {
+    activePdfDocument = null;
+    message.textContent = "No se pudo visualizar este PDF. Intenta cargarlo nuevamente desde el administrador.";
+  }
+}
+
+function wireQuoteViewer() {
+  document.querySelectorAll(".quote-download").forEach((control) => {
+    control.addEventListener("click", (event) => {
+      event.preventDefault();
+      const id = control.dataset.quoteViewer;
+      if (!id) return;
+      const card = document.querySelector(`[data-quote-id="${id}"]`);
+      const quote = state[`quote:${id}:pdf`];
+      if (quote?.data && card) openPdfViewer(card, quote);
+    });
+  });
+
+  document.querySelector(".pdf-close")?.addEventListener("click", closePdfViewer);
+  document.querySelector("[data-pdf-prev]")?.addEventListener("click", () => renderPdfPage(activePdfPage - 1));
+  document.querySelector("[data-pdf-next]")?.addEventListener("click", () => renderPdfPage(activePdfPage + 1));
+}
+
+async function openPdfViewer(card, quote) {
+  const modal = document.querySelector(".pdf-modal");
+  const title = document.querySelector("[data-pdf-title]");
+  const message = document.querySelector("[data-pdf-message]");
+  const canvas = document.querySelector("[data-pdf-canvas]");
+  if (!modal || !window.pdfjsLib) {
+    alert("El visualizador PDF no está disponible en este momento.");
+    return;
+  }
+
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc = "./assets/pdf.worker.min.js";
+  modal.hidden = false;
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("panel-open");
+  title.textContent = `${card.dataset.category || "Cotización"} · ${card.dataset.provider || "Proveedor"}`;
+  message.textContent = "Cargando documento...";
+  canvas.hidden = true;
+
+  try {
+    const data = dataUrlToUint8Array(quote.data);
+    activePdfDocument = await window.pdfjsLib.getDocument({ data }).promise;
+    activePdfPage = 1;
+    await renderPdfPage(1);
+  } catch {
+    activePdfDocument = null;
+    message.textContent = "No se pudo visualizar este PDF. Intenta cargarlo nuevamente desde el administrador.";
+  }
+}
+
+function closePdfViewer() {
+  const modal = document.querySelector(".pdf-modal");
+  const canvas = document.querySelector("[data-pdf-canvas]");
+  const message = document.querySelector("[data-pdf-message]");
+  if (!modal) return;
+  modal.hidden = true;
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("panel-open");
+  activePdfDocument = null;
+  activePdfPage = 1;
+  if (canvas) canvas.hidden = true;
+  if (message) message.textContent = "";
+}
+
+async function renderPdfPage(pageNumber) {
+  if (!activePdfDocument) return;
+  const nextPage = Math.min(Math.max(pageNumber, 1), activePdfDocument.numPages);
+  const page = await activePdfDocument.getPage(nextPage);
+  const canvas = document.querySelector("[data-pdf-canvas]");
+  const message = document.querySelector("[data-pdf-message]");
+  const pageLabel = document.querySelector("[data-pdf-pages]");
+  const prevButton = document.querySelector("[data-pdf-prev]");
+  const nextButton = document.querySelector("[data-pdf-next]");
+  const context = canvas.getContext("2d");
+  const viewport = page.getViewport({ scale: Math.min(1.35, Math.max(0.8, (window.innerWidth - 80) / 760)) });
+
+  activePdfPage = nextPage;
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+  canvas.hidden = false;
+  message.textContent = "";
+  await page.render({ canvasContext: context, viewport }).promise;
+
+  pageLabel.textContent = `Página ${activePdfPage} de ${activePdfDocument.numPages}`;
+  prevButton.disabled = activePdfPage <= 1;
+  nextButton.disabled = activePdfPage >= activePdfDocument.numPages;
+}
+
+function dataUrlToUint8Array(dataUrl) {
+  const base64 = String(dataUrl).split(",")[1] || "";
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+  return bytes;
+}
+
+let activePdfDocument = null;
+let activePdfPage = 1;
+
+function setQuotePdf(card, quote) {
+  const control = card.querySelector(".quote-download");
+  const meta = card.querySelector(".quote-meta");
+  if (!control || !meta) return;
+
+  control.removeAttribute("download");
+  control.removeAttribute("href");
+
+  if (!quote?.data) {
+    control.removeAttribute("data-quote-viewer");
+    control.setAttribute("aria-disabled", "true");
+    control.classList.add("disabled");
+    control.textContent = "Sin PDF";
+    meta.textContent = "PDF pendiente de carga";
+    return;
+  }
+
+  control.dataset.quoteViewer = card.dataset.quoteId;
+  control.removeAttribute("aria-disabled");
+  control.classList.remove("disabled");
+  control.textContent = "Ver PDF";
+  meta.textContent = quote.name ? `Documento disponible: ${quote.name}` : "Documento disponible para visualizar";
+}
+
+function wireQuoteViewer() {
+  document.querySelectorAll(".quote-download").forEach((control) => {
+    control.addEventListener("click", (event) => {
+      event.preventDefault();
+      const id = control.dataset.quoteViewer;
+      if (!id) return;
+      const card = document.querySelector(`[data-quote-id="${id}"]`);
+      const quote = state[`quote:${id}:pdf`];
+      if (quote?.data && card) openPdfViewer(card, quote);
+    });
+  });
+
+  document.querySelector(".pdf-close")?.addEventListener("click", closePdfViewer);
+  document.querySelector("[data-pdf-prev]")?.addEventListener("click", () => renderPdfPage(activePdfPage - 1));
+  document.querySelector("[data-pdf-next]")?.addEventListener("click", () => renderPdfPage(activePdfPage + 1));
+}
+
+async function openPdfViewer(card, quote) {
+  const modal = document.querySelector(".pdf-modal");
+  const title = document.querySelector("[data-pdf-title]");
+  const message = document.querySelector("[data-pdf-message]");
+  const canvas = document.querySelector("[data-pdf-canvas]");
+  if (!modal || !window.pdfjsLib) {
+    alert("El visualizador PDF no está disponible en este momento.");
+    return;
+  }
+
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc = "./assets/pdf.worker.min.js";
+  modal.hidden = false;
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("panel-open");
+  title.textContent = `${card.dataset.category || "Cotización"} · ${card.dataset.provider || "Proveedor"}`;
+  message.textContent = "Cargando documento...";
+  canvas.hidden = true;
+
+  try {
+    const data = dataUrlToUint8Array(quote.data);
+    activePdfDocument = await window.pdfjsLib.getDocument({ data }).promise;
+    activePdfPage = 1;
+    await renderPdfPage(1);
+  } catch {
+    activePdfDocument = null;
+    message.textContent = "No se pudo visualizar este PDF. Intenta cargarlo nuevamente desde el administrador.";
+  }
+}
+
+function closePdfViewer() {
+  const modal = document.querySelector(".pdf-modal");
+  const canvas = document.querySelector("[data-pdf-canvas]");
+  const message = document.querySelector("[data-pdf-message]");
+  modal.hidden = true;
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("panel-open");
+  activePdfDocument = null;
+  activePdfPage = 1;
+  if (canvas) canvas.hidden = true;
+  if (message) message.textContent = "";
+}
+
+async function renderPdfPage(pageNumber) {
+  if (!activePdfDocument) return;
+  const nextPage = Math.min(Math.max(pageNumber, 1), activePdfDocument.numPages);
+  const page = await activePdfDocument.getPage(nextPage);
+  const canvas = document.querySelector("[data-pdf-canvas]");
+  const message = document.querySelector("[data-pdf-message]");
+  const pageLabel = document.querySelector("[data-pdf-pages]");
+  const prevButton = document.querySelector("[data-pdf-prev]");
+  const nextButton = document.querySelector("[data-pdf-next]");
+  const context = canvas.getContext("2d");
+  const viewport = page.getViewport({ scale: Math.min(1.35, Math.max(0.8, (window.innerWidth - 80) / 760)) });
+
+  activePdfPage = nextPage;
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+  canvas.hidden = false;
+  message.textContent = "";
+  await page.render({ canvasContext: context, viewport }).promise;
+
+  pageLabel.textContent = `Página ${activePdfPage} de ${activePdfDocument.numPages}`;
+  prevButton.disabled = activePdfPage <= 1;
+  nextButton.disabled = activePdfPage >= activePdfDocument.numPages;
+}
+
+function dataUrlToUint8Array(dataUrl) {
+  const base64 = String(dataUrl).split(",")[1] || "";
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+  return bytes;
+}
+
+wireQuoteViewer();
+
+function createQuoteTool(card) {
+  const id = card.dataset.quoteId;
+  const provider = card.dataset.provider || "Proveedor";
+  const category = card.dataset.category || "Cotización";
+  const savedQuote = state[`quote:${id}:pdf`];
+  const tool = document.createElement("div");
+  tool.className = "admin-tool";
+  tool.innerHTML = `
+    <strong>${escapeHtml(category)} · ${escapeHtml(provider)}</strong>
+    <label>Archivo PDF <input type="file" accept="application/pdf,.pdf" data-admin-quote-pdf="${id}" /></label>
+    <span class="file-note">${savedQuote?.name ? `Archivo actual: ${escapeHtml(savedQuote.name)}` : "Sin PDF cargado"}</span>
+  `;
+  return tool;
+}
+
+function wireAdminQuoteTools() {
+  document.querySelectorAll("[data-admin-quote-pdf]").forEach((input) => {
+    input.addEventListener("change", async () => {
+      const id = input.dataset.adminQuotePdf;
+      const card = document.querySelector(`[data-quote-id="${id}"]`);
+      const file = input.files?.[0];
+      if (!file || !card) return;
+      if (file.type && file.type !== "application/pdf") {
+        updateFileNote(input, "Selecciona un archivo PDF.");
+        input.value = "";
+        return;
+      }
+      const quote = {
+        name: file.name,
+        data: await fileToDataUrl(file),
+        updatedAt: new Date().toISOString(),
+      };
+      state[`quote:${id}:pdf`] = quote;
+      setQuotePdf(card, quote);
+      updateFileNote(input, `PDF cargado: ${file.name}`);
+      saveState();
+    });
+  });
+}
+
+function setQuotePdf(card, quote) {
+  const link = card.querySelector(".quote-download");
+  const meta = card.querySelector(".quote-meta");
+  const provider = card.dataset.provider || "cotizacion";
+  if (!link || !meta) return;
+
+  if (!quote?.data) {
+    link.removeAttribute("href");
+    link.removeAttribute("download");
+    link.setAttribute("aria-disabled", "true");
+    link.classList.add("disabled");
+    link.textContent = "Sin PDF";
+    meta.textContent = "PDF pendiente de carga";
+    return;
+  }
+
+  link.href = quote.data;
+  link.download = quote.name || `${provider}.pdf`;
+  link.removeAttribute("aria-disabled");
+  link.classList.remove("disabled");
+  link.textContent = "Descargar PDF";
+  meta.textContent = quote.name ? `Archivo: ${quote.name}` : "PDF disponible";
+}
+
+function fileToDataUrl(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(file);
+  });
+}
+
+function restoreSavedChanges() {
+  if (state.heroImage) {
+    setHeroImage(state.heroImage);
+  }
+
+  document.querySelectorAll("[data-edit-image]").forEach((image) => {
+    const saved = state[`image:${image.dataset.imageKey}`];
+    if (saved) image.src = saved;
+  });
+
+  document.querySelectorAll(".project-card").forEach((card) => {
+    const projectId = card.dataset.projectId;
+    const savedName = state[`project:${projectId}:name`];
+    if (savedName) setProjectName(card, savedName);
+    const savedProgress = state[`progress:${projectId}`];
+    setProjectProgress(card, savedProgress ?? Number.parseInt(card.querySelector(".progress-value")?.textContent || "0", 10));
+    renderPreview(card.querySelector('[data-gallery-preview="before"]'), state[`project:${projectId}:before`] || []);
+    renderPreview(card.querySelector('[data-gallery-preview="after"]'), state[`project:${projectId}:after`] || []);
+  });
+
+  document.querySelectorAll(".person-card").forEach((card) => {
+    const id = card.dataset.personId;
+    const name = state[`person:${id}:name`] || card.dataset.defaultName;
+    const role = state[`person:${id}:role`] || card.dataset.defaultRole;
+    const photo = state[`person:${id}:photo`];
+    setPerson(card, { name, role, photo });
+    const nameInput = card.querySelector("[data-person-name-input]");
+    const roleInput = card.querySelector("[data-person-role-input]");
+    if (nameInput) nameInput.value = name;
+    if (roleInput) roleInput.value = role;
+  });
+
+  document.querySelectorAll(".amenity-detail").forEach((section) => {
+    const id = section.dataset.amenityId;
+    const photos = state[`amenity:${id}:photos`];
+    const rules = state[`amenity:${id}:rules`];
+    if (photos?.length) renderAmenityGallery(section, photos);
+    if (rules) setAmenityRules(section, rules);
+    const editor = section.querySelector("[data-amenity-rules-editor]");
+    if (editor) editor.value = getAmenityRulesText(section);
+  });
+
+  document.querySelectorAll(".quote-card").forEach((card) => {
+    setQuotePdf(card, state[`quote:${card.dataset.quoteId}:pdf`]);
+  });
+}
+
+function buildAdminPanelTools() {
+  if (!adminToolList) return;
+  adminToolList.innerHTML = "";
+
+  const imageGroup = createAdminGroup("Imágenes principales");
+  document.querySelectorAll("[data-edit-image]").forEach((image) => {
+    if (image.closest(".amenity-section, .amenity-detail")) return;
+    imageGroup.appendChild(createImageTool(image.dataset.editImage, image.dataset.imageKey));
+  });
+  adminToolList.appendChild(imageGroup);
+
+  const projectGroup = createAdminGroup("Proyectos: avance y fotografías");
+  projectGroup.appendChild(createAddProjectTool());
+  document.querySelectorAll(".project-card").forEach((card) => {
+    projectGroup.appendChild(createProjectTool(card));
+  });
+  adminToolList.appendChild(projectGroup);
+
+  const quoteGroup = createAdminGroup("Cotizaciones: PDF por proveedor");
+  document.querySelectorAll(".quote-card").forEach((card) => {
+    quoteGroup.appendChild(createQuoteTool(card));
+  });
+  adminToolList.appendChild(quoteGroup);
+
+  const peopleGroup = createAdminGroup("Personal y responsables");
+  document.querySelectorAll(".person-card").forEach((card) => {
+    peopleGroup.appendChild(createPersonTool(card));
+  });
+  adminToolList.appendChild(peopleGroup);
+
+  wireAdminPersonTools();
+  wireAdminProjectTools();
+  wireAdminQuoteTools();
+  wireImageReplacement();
+}
+
 function createAddProjectTool() {
   const tool = document.createElement("div");
   tool.className = "admin-tool";
@@ -704,6 +1355,10 @@ function restoreSavedChanges() {
     if (rules) setAmenityRules(section, rules);
     const editor = section.querySelector("[data-amenity-rules-editor]");
     if (editor) editor.value = getAmenityRulesText(section);
+  });
+
+  document.querySelectorAll(".quote-card").forEach((card) => {
+    setQuotePdf(card, state[`quote:${card.dataset.quoteId}:pdf`]);
   });
 }
 
@@ -827,6 +1482,12 @@ function buildAdminPanelTools() {
   });
   adminToolList.appendChild(projectGroup);
 
+  const quoteGroup = createAdminGroup("Cotizaciones: PDF por proveedor");
+  document.querySelectorAll(".quote-card").forEach((card) => {
+    quoteGroup.appendChild(createQuoteTool(card));
+  });
+  adminToolList.appendChild(quoteGroup);
+
   const peopleGroup = createAdminGroup("Personal y responsables");
   document.querySelectorAll(".person-card").forEach((card) => {
     peopleGroup.appendChild(createPersonTool(card));
@@ -835,5 +1496,64 @@ function buildAdminPanelTools() {
 
   wireAdminPersonTools();
   wireAdminProjectTools();
+  wireAdminQuoteTools();
   wireImageReplacement();
+}
+
+async function loadPdfLibrary() {
+  if (window.pdfjsLib) return window.pdfjsLib;
+  const library = await import("./assets/pdf.min.js");
+  window.pdfjsLib = library;
+  return library;
+}
+
+async function openPdfViewer(card, quote) {
+  const modal = document.querySelector(".pdf-modal");
+  const title = document.querySelector("[data-pdf-title]");
+  const message = document.querySelector("[data-pdf-message]");
+  const canvas = document.querySelector("[data-pdf-canvas]");
+  if (!modal) return;
+
+  modal.hidden = false;
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("panel-open");
+  title.textContent = `${card.dataset.category || "Cotización"} · ${card.dataset.provider || "Proveedor"}`;
+  message.textContent = "Cargando documento...";
+  canvas.hidden = true;
+
+  try {
+    const pdfjsLib = await loadPdfLibrary();
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "./assets/pdf.worker.min.js";
+    const data = dataUrlToUint8Array(quote.data);
+    activePdfDocument = await pdfjsLib.getDocument({ data }).promise;
+    activePdfPage = 1;
+    await renderPdfPage(1);
+  } catch {
+    activePdfDocument = null;
+    message.textContent = "No se pudo visualizar este PDF. Intenta cargarlo nuevamente desde el administrador.";
+  }
+}
+
+function setQuotePdf(card, quote) {
+  const control = card.querySelector(".quote-download");
+  const meta = card.querySelector(".quote-meta");
+  if (!control || !meta) return;
+
+  control.removeAttribute("download");
+  control.removeAttribute("href");
+
+  if (!quote?.data) {
+    control.removeAttribute("data-quote-viewer");
+    control.setAttribute("aria-disabled", "true");
+    control.classList.add("disabled");
+    control.textContent = "Sin PDF";
+    meta.textContent = "PDF pendiente de carga";
+    return;
+  }
+
+  control.dataset.quoteViewer = card.dataset.quoteId;
+  control.removeAttribute("aria-disabled");
+  control.classList.remove("disabled");
+  control.textContent = "Ver PDF";
+  meta.textContent = quote.name ? `Documento disponible: ${quote.name}` : "Documento disponible para visualizar";
 }

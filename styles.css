@@ -290,6 +290,78 @@ body.admin-mode .profile-upload {
   display: grid;
 }
 
+.security-watermark {
+  display: none;
+}
+
+.security-watermark span {
+  white-space: nowrap;
+}
+
+.site-locked .security-watermark,
+.site-locked .security-shield {
+  display: none;
+}
+
+.security-shield {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: none;
+  place-items: center;
+  padding: 24px;
+  background: rgba(9, 21, 18, 0.86);
+  color: #fff;
+  text-align: center;
+}
+
+.security-shield strong {
+  display: block;
+  margin-bottom: 10px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 500;
+}
+
+.security-shield span {
+  color: rgba(255, 255, 255, 0.74);
+  line-height: 1.6;
+}
+
+body.security-alert .security-shield,
+body.security-paused .security-shield,
+body.security-printing .security-shield {
+  display: grid;
+}
+
+body.security-paused main,
+body.security-paused header,
+body.security-paused footer,
+body.security-paused .pdf-modal,
+body.security-capture main,
+body.security-capture header,
+body.security-capture footer,
+body.security-capture .pdf-modal {
+  filter: blur(18px);
+}
+
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  .security-shield,
+  .security-shield * {
+    visibility: visible !important;
+  }
+
+  .security-shield {
+    display: grid !important;
+    background: #fff;
+    color: #0f231e;
+  }
+}
+
 .project-card .admin-progress,
 .project-card .upload-pair {
   display: none !important;
@@ -496,6 +568,7 @@ h1 {
 .metric-grid,
 .team-grid,
 .amenity-grid,
+.quote-grid,
 .project-board,
 .tower-grid {
   display: grid;
@@ -665,6 +738,185 @@ h1 {
   gap: 12px;
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+.quote-section {
+  background: #f2f5f0;
+}
+
+.quote-category + .quote-category {
+  margin-top: 38px;
+}
+
+.quote-category-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.quote-category-heading svg {
+  width: 42px;
+  height: 42px;
+  padding: 10px;
+  color: var(--green);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.quote-category-heading h3 {
+  margin: 2px 0 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.65rem, 3vw, 2.5rem);
+  font-weight: 500;
+}
+
+.quote-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.quote-card {
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 16px 42px rgba(24, 33, 31, 0.06);
+}
+
+.quote-card h4 {
+  margin: 0 0 10px;
+  font-size: 1.18rem;
+}
+
+.quote-card p,
+.quote-meta {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.quote-card footer {
+  display: grid;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.quote-download {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 42px;
+  padding: 10px 14px;
+  border: 0;
+  background: var(--green);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  text-align: center;
+}
+
+.quote-download.disabled {
+  pointer-events: none;
+  background: #dfe5dc;
+  color: var(--muted);
+}
+
+.pdf-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(11, 22, 19, 0.72);
+}
+
+.pdf-modal[hidden] {
+  display: none;
+}
+
+.pdf-dialog {
+  width: min(960px, 100%);
+  max-height: min(92vh, 920px);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 28px 80px rgba(11, 22, 19, 0.34);
+  overflow: hidden;
+}
+
+.pdf-head,
+.pdf-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--line);
+}
+
+.pdf-head h2 {
+  margin: 2px 0 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  font-weight: 500;
+}
+
+.pdf-close {
+  flex: 0 0 auto;
+}
+
+.pdf-stage {
+  min-height: 360px;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  overflow: auto;
+  background: #eef2eb;
+}
+
+.pdf-stage canvas {
+  max-width: 100%;
+  height: auto;
+  background: #fff;
+  box-shadow: 0 12px 34px rgba(24, 33, 31, 0.12);
+}
+
+.pdf-message {
+  max-width: 560px;
+  color: var(--muted);
+  line-height: 1.6;
+  text-align: center;
+}
+
+.pdf-controls {
+  border-top: 1px solid var(--line);
+  border-bottom: 0;
+}
+
+.pdf-controls button {
+  min-width: 120px;
+  min-height: 42px;
+  border: 0;
+  background: var(--green);
+  color: #fff;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.pdf-controls button:disabled {
+  cursor: not-allowed;
+  background: #dfe5dc;
+  color: var(--muted);
+}
+
+.pdf-controls span {
+  color: var(--muted);
+  font-weight: 800;
+  text-align: center;
 }
 
 .upload-pair {
@@ -1030,6 +1282,7 @@ body.admin-mode .person-admin {
   .section-heading.split,
   .tower-grid,
   .project-board,
+  .quote-grid,
   .team-grid,
   .amenity-detail-grid,
   .upload-pair {
@@ -1070,9 +1323,20 @@ body.admin-mode .person-admin {
   .metric-grid,
   .amenity-grid,
   .gallery-strip,
+  .quote-grid,
   .pool-gallery,
   .upload-pair {
     grid-template-columns: 1fr;
+  }
+
+  .pdf-head,
+  .pdf-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .pdf-controls button {
+    width: 100%;
   }
 
   .gallery-strip img,

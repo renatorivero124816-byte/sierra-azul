@@ -6,7 +6,7 @@
   <title>SIERRAZUL | Mantenimiento</title>
   <link rel="preconnect" href="https://images.unsplash.com" />
   <link rel="preconnect" href="https://unpkg.com" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=18" />
 </head>
 <body class="site-locked">
   <section class="access-gate" aria-label="Acceso privado">
@@ -76,6 +76,7 @@
       </button>
       <div class="nav-links">
         <a href="#proyectos">Proyectos</a>
+        <a href="#cotizaciones">Cotizaciones</a>
         <a href="#equipos">Equipos</a>
         <a href="#plan">Cronología</a>
       </div>
@@ -186,6 +187,110 @@
           <div class="project-photo-preview" data-gallery-preview="before"></div>
           <div class="project-photo-preview" data-gallery-preview="after"></div>
         </article>
+      </div>
+    </section>
+
+    <section class="section quote-section" id="cotizaciones">
+      <div class="section-heading">
+        <p class="eyebrow">Cotizaciones</p>
+        <h2>Proveedores ordenados por categoría.</h2>
+        <p>Consulta y descarga los documentos PDF cargados desde el panel de administración.</p>
+      </div>
+
+      <div class="quote-category" data-quote-category="bombas-calor">
+        <div class="quote-category-heading">
+          <i data-lucide="waves"></i>
+          <div>
+            <p class="eyebrow">Categoría</p>
+            <h3>Bombas de calor</h3>
+          </div>
+        </div>
+        <div class="quote-grid">
+          <article class="quote-card" data-quote-id="pool-covers" data-category="Bombas de calor" data-provider="Pool Covers">
+            <span class="status">Proveedor</span>
+            <h4>Pool Covers</h4>
+            <p>Cotización para trabajos y equipos de bombas de calor.</p>
+            <footer>
+              <span class="quote-meta">PDF pendiente de carga</span>
+              <button class="quote-download disabled" type="button" aria-disabled="true">Sin PDF</button>
+            </footer>
+          </article>
+          <article class="quote-card" data-quote-id="aquasistemas" data-category="Bombas de calor" data-provider="Aquasistemas">
+            <span class="status">Proveedor</span>
+            <h4>Aquasistemas</h4>
+            <p>Cotización para trabajos y equipos de bombas de calor.</p>
+            <footer>
+              <span class="quote-meta">PDF pendiente de carga</span>
+              <button class="quote-download disabled" type="button" aria-disabled="true">Sin PDF</button>
+            </footer>
+          </article>
+          <article class="quote-card" data-quote-id="washpool" data-category="Bombas de calor" data-provider="Washpool">
+            <span class="status">Proveedor</span>
+            <h4>Washpool</h4>
+            <p>Cotización para trabajos y equipos de bombas de calor.</p>
+            <footer>
+              <span class="quote-meta">PDF pendiente de carga</span>
+              <button class="quote-download disabled" type="button" aria-disabled="true">Sin PDF</button>
+            </footer>
+          </article>
+        </div>
+      </div>
+
+      <div class="quote-category" data-quote-category="elevadores">
+        <div class="quote-category-heading">
+          <i data-lucide="arrow-up-down"></i>
+          <div>
+            <p class="eyebrow">Categoría</p>
+            <h3>Elevadores</h3>
+          </div>
+        </div>
+        <div class="quote-grid">
+          <article class="quote-card" data-quote-id="otis" data-category="Elevadores" data-provider="Otis">
+            <span class="status">Proveedor</span>
+            <h4>Otis</h4>
+            <p>Cotización para mantenimiento, revisión o modernización de elevadores.</p>
+            <footer>
+              <span class="quote-meta">PDF pendiente de carga</span>
+              <button class="quote-download disabled" type="button" aria-disabled="true">Sin PDF</button>
+            </footer>
+          </article>
+          <article class="quote-card" data-quote-id="mitsubishi" data-category="Elevadores" data-provider="Mitsubishi">
+            <span class="status">Proveedor</span>
+            <h4>Mitsubishi</h4>
+            <p>Cotización para mantenimiento, revisión o modernización de elevadores.</p>
+            <footer>
+              <span class="quote-meta">PDF pendiente de carga</span>
+              <button class="quote-download disabled" type="button" aria-disabled="true">Sin PDF</button>
+            </footer>
+          </article>
+          <article class="quote-card" data-quote-id="schindler" data-category="Elevadores" data-provider="Schindler">
+            <span class="status">Proveedor</span>
+            <h4>Schindler</h4>
+            <p>Cotización para mantenimiento, revisión o modernización de elevadores.</p>
+            <footer>
+              <span class="quote-meta">PDF pendiente de carga</span>
+              <button class="quote-download disabled" type="button" aria-disabled="true">Sin PDF</button>
+            </footer>
+          </article>
+          <article class="quote-card" data-quote-id="grupo-iberoacensores" data-category="Elevadores" data-provider="Grupo Iberoacensores">
+            <span class="status">Proveedor</span>
+            <h4>Grupo Iberoacensores</h4>
+            <p>Cotización para mantenimiento, revisión o modernización de elevadores.</p>
+            <footer>
+              <span class="quote-meta">PDF pendiente de carga</span>
+              <button class="quote-download disabled" type="button" aria-disabled="true">Sin PDF</button>
+            </footer>
+          </article>
+          <article class="quote-card" data-quote-id="quantum-elevadores" data-category="Elevadores" data-provider="Quantum Elevadores">
+            <span class="status">Proveedor</span>
+            <h4>Quantum Elevadores</h4>
+            <p>Cotización para mantenimiento, revisión o modernización de elevadores.</p>
+            <footer>
+              <span class="quote-meta">PDF pendiente de carga</span>
+              <button class="quote-download disabled" type="button" aria-disabled="true">Sin PDF</button>
+            </footer>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -503,10 +608,33 @@
     <a href="#inicio">Volver arriba</a>
   </footer>
 
+  <div class="pdf-modal" hidden aria-hidden="true">
+    <div class="pdf-dialog" role="dialog" aria-modal="true" aria-labelledby="pdf-title">
+      <div class="pdf-head">
+        <div>
+          <p class="eyebrow">Visualizador</p>
+          <h2 id="pdf-title" data-pdf-title>Documento PDF</h2>
+        </div>
+        <button class="icon-button pdf-close" type="button" aria-label="Cerrar visor">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="pdf-stage">
+        <canvas data-pdf-canvas></canvas>
+        <p class="pdf-message" data-pdf-message></p>
+      </div>
+      <div class="pdf-controls">
+        <button type="button" data-pdf-prev>Anterior</button>
+        <span data-pdf-pages>Página 1 de 1</span>
+        <button type="button" data-pdf-next>Siguiente</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="cloud-sync.js"></script>
-  <script src="script.js"></script>
+  <script src="cloud-sync.js?v=15"></script>
+  <script src="script.js?v=18"></script>
 </body>
 </html>
