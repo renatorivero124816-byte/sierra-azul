@@ -1,331 +1,556 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AXERON Security | Cerrajería de alta tecnología</title>
-    <meta
-      name="description"
-      content="Cerrajería premium, cerraduras inteligentes, control de acceso, dispositivos NFC, grabado láser, impresión 3D y seguridad residencial de alta tecnología."
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <a class="brand" href="#inicio" aria-label="AXERON Security">
-        <span class="brand-mark">
-          <img src="assets/axeron-logo-premium.png" alt="" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIERRAZUL | Portal Residencial</title>
+  <link rel="preconnect" href="https://images.unsplash.com" />
+  <link rel="preconnect" href="https://unpkg.com" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="site-locked">
+  <section class="access-gate" aria-label="Acceso privado">
+    <form class="access-card">
+      <p class="eyebrow">Acceso privado</p>
+      <h1>SIERRAZUL</h1>
+      <p>Portal visible únicamente para asistentes autorizados de la reunión.</p>
+      <label>
+        Usuario
+        <input type="text" name="username" autocomplete="username" placeholder="Usuario" />
+      </label>
+      <label>
+        Contraseña
+        <input type="password" name="password" autocomplete="current-password" placeholder="Contraseña" />
+      </label>
+      <button type="submit">Entrar</button>
+      <span class="access-message" role="status"></span>
+    </form>
+  </section>
+
+  <button class="admin-launch" type="button" aria-label="Abrir administrador">
+    <i data-lucide="lock-keyhole"></i>
+  </button>
+
+  <aside class="admin-panel" aria-hidden="true">
+    <div class="admin-panel-head">
+      <div>
+        <p class="eyebrow">Administrador</p>
+        <h2>Editar SIERRAZUL</h2>
+      </div>
+      <button class="admin-close" type="button" aria-label="Cerrar administrador">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <form class="admin-login">
+      <label>
+        Contraseña
+        <input type="password" name="password" autocomplete="current-password" placeholder="Palabra clave" />
+      </label>
+      <button type="submit">Entrar</button>
+      <p class="admin-message" role="status"></p>
+    </form>
+
+    <div class="admin-tools" hidden>
+      <p class="admin-note">Modo edición activo. Los residentes no ven botones para subir fotos ni mover avances.</p>
+      <div class="admin-tool">
+        <strong>Imagen de portada</strong>
+        <label>Reemplazar portada <input type="file" accept="image/*" data-admin-bg=".site-header" /></label>
+      </div>
+      <div class="admin-tool-list"></div>
+      <button class="admin-logout" type="button">Salir del administrador</button>
+    </div>
+  </aside>
+
+  <header class="site-header" id="inicio">
+    <nav class="topbar" aria-label="Navegación principal">
+      <a class="brand" href="#inicio">
+        <span class="brand-mark">SA</span>
+        <span>
+          <strong>SIERRAZUL</strong>
+          <small>Administración Condominial</small>
         </span>
-        <small>Security</small>
       </a>
+      <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false">
+        <i data-lucide="menu"></i>
+      </button>
+      <div class="nav-links">
+        <a href="#torres">Torres</a>
+        <a href="#proyectos">Proyectos</a>
+        <a href="#equipos">Equipos</a>
+        <a href="#amenidades">Amenidades</a>
+        <a href="#plan">Plan futuro</a>
+      </div>
+    </nav>
 
-      <nav class="main-nav" aria-label="Navegación principal">
-        <a href="#servicios">Servicios</a>
-        <a href="#tecnologia">Tecnología</a>
-        <a href="#cobertura">Querétaro</a>
-        <a href="#sucursal">Sucursal</a>
-        <a href="#confianza">Confianza</a>
-        <a href="#contacto">Contacto</a>
-      </nav>
-
-      <a class="whatsapp" href="https://wa.me/525656154411" target="_blank" rel="noreferrer">
-        WhatsApp
-      </a>
-    </header>
-
-    <a class="floating-whatsapp" href="https://wa.me/525656154411" target="_blank" rel="noreferrer" aria-label="Contactar por WhatsApp">
-      WhatsApp
-    </a>
-
-    <main>
-      <section class="hero" id="inicio" aria-label="Presentación AXERON Security">
-        <div class="hero-media" role="img" aria-label="Entrada residencial moderna con seguridad premium"></div>
-        <div class="hero-overlay"></div>
-
-        <div class="hero-content reveal">
-          <p class="eyebrow">Cerrajería premium y seguridad residencial</p>
-          <div class="hero-logo-stage" aria-hidden="true">
-            <img class="hero-logo" src="assets/axeron-logo-premium.png" alt="" />
-          </div>
-          <h1 class="visually-hidden">AXERON Security</h1>
-          <p class="hero-copy">
-            Soluciones discretas, precisas y de alta tecnología para casas, condominios,
-            departamentos VIP y administraciones de Querétaro que buscan seguridad sin exposición.
-          </p>
-
-          <div class="hero-actions">
-            <a class="primary-button" href="#contacto">Solicitar atención</a>
-            <a class="secondary-button" href="#servicios">Ver capacidades</a>
-          </div>
-
-          <div class="trust-row" aria-label="Indicadores de confianza">
-            <span>Respuesta prioritaria</span>
-            <span>Cerraduras inteligentes</span>
-            <span>NFC y acceso digital</span>
-            <span>Servicio en Querétaro</span>
-            <span>Servicio discreto</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="section intro reveal" id="servicios">
-        <div class="section-heading">
-          <p class="eyebrow">Precisión, estética y control</p>
-          <h2>Seguridad avanzada para espacios de alto valor</h2>
-        </div>
-        <p>
-          AXERON está diseñada para clientes que buscan una presencia profesional: personal
-          capacitado, diagnóstico claro, herramientas especializadas y acabados limpios en puertas,
-          accesos, llaves, duplicados, cerraduras, dispositivos NFC y sistemas modernos.
+    <section class="hero">
+      <div class="hero-content">
+        <p class="eyebrow">Portal privado para residentes</p>
+        <h1>SIERRAZUL, gestión elegante para un condominio en movimiento.</h1>
+        <p class="hero-copy">
+          Un espacio central para visualizar avances, fotografías de amenidades,
+          equipos operativos, seguridad y el plan cronológico de mantenimiento.
         </p>
-      </section>
+        <div class="hero-actions">
+          <a class="primary-action" href="#proyectos">Ver proyectos activos</a>
+          <a class="secondary-action" href="#torres">Explorar torres</a>
+        </div>
+      </div>
+      <div class="hero-status" aria-label="Resumen del condominio">
+        <span><strong>2</strong> torres</span>
+        <span><strong>SIERRA</strong> y AZUL</span>
+        <span><strong>8</strong> proyectos activos</span>
+      </div>
+    </section>
+  </header>
 
-      <section class="services-grid">
-        <article class="service-card reveal">
-          <img
-            src="https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=900&q=80"
-            alt="Cerradura inteligente en una puerta moderna"
-          />
-          <div>
-            <span>01</span>
-            <h3>Cerraduras inteligentes</h3>
-            <p>Instalación, configuración y mantenimiento de accesos digitales con apertura segura.</p>
-          </div>
+  <main>
+    <section class="section intro-band">
+      <div class="section-heading">
+        <p class="eyebrow">Vista general</p>
+        <h2>Todo SIERRAZUL desde una sola página.</h2>
+      </div>
+      <div class="metric-grid">
+        <article>
+          <i data-lucide="building-2"></i>
+          <strong>Torres SIERRA y AZUL</strong>
+          <span>Galerías, información y avances por torre.</span>
         </article>
-
-        <article class="service-card reveal">
-          <img
-            src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=900&q=80"
-            alt="Interior residencial premium"
-          />
-          <div>
-            <span>02</span>
-            <h3>Casas y condominios discretos</h3>
-            <p>Atención reservada para residencias y desarrollos que necesitan seguridad de alto nivel.</p>
-          </div>
+        <article>
+          <i data-lucide="clipboard-check"></i>
+          <strong>Mantenimiento vivo</strong>
+          <span>Obras activas, responsables, fechas, estatus y fotografías.</span>
         </article>
-
-        <article class="service-card reveal">
-          <img
-            src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80"
-            alt="Recepcion corporativa moderna"
-          />
-          <div>
-            <span>03</span>
-            <h3>Administraciones y accesos</h3>
-            <p>Soluciones para condominios, oficinas, controles de acceso y protocolos de entrada.</p>
-          </div>
+        <article>
+          <i data-lucide="shield-check"></i>
+          <strong>Operación diaria</strong>
+          <span>Administración, limpieza, mantenimiento y seguridad.</span>
         </article>
-      </section>
+        <article>
+          <i data-lucide="calendar-clock"></i>
+          <strong>Plan cronológico</strong>
+          <span>Prioridades futuras para presupuestar y comunicar.</span>
+        </article>
+      </div>
+    </section>
 
-      <section class="discretion-band section reveal">
+    <section class="section" id="torres">
+      <div class="section-heading split">
         <div>
-          <p class="eyebrow">Especialidad residencial</p>
-          <h2>Discreción para hogares y condominios de alto nivel</h2>
+          <p class="eyebrow">Torres</p>
+          <h2>Torres SIERRA y AZUL.</h2>
         </div>
-        <p>
-          Nos especializamos en casas, residenciales privados y condominios que buscan una intervención
-          limpia, silenciosa y confiable: cambios de cerradura, duplicados, cilindros, chapas, accesos
-          inteligentes, NFC y asesoría para reforzar puntos vulnerables sin llamar la atención.
-        </p>
-      </section>
+        <p>Cada torre puede mostrar información, avances, fotografías y evidencias de mantenimiento.</p>
+      </div>
 
-      <section class="tech-band" id="tecnologia">
-        <div class="tech-copy reveal">
-          <p class="eyebrow">Alta tecnología aplicada</p>
-          <h2>No solo abrimos puertas. Protegemos confianza.</h2>
-          <p>
-            Cada servicio se maneja con diagnóstico, herramientas de precisión y criterio de seguridad.
-            La experiencia visual es moderna porque el servicio también lo es: limpio, controlado y
-            preparado para clientes exigentes.
-          </p>
+      <div class="tower-grid">
+        <article class="tower-feature">
+          <img data-edit-image="Torre SIERRA" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80" alt="Vista exterior de torre residencial moderna" />
+          <div>
+            <p class="eyebrow">Torre</p>
+            <h3>SIERRA</h3>
+            <p>Acceso principal, lobby, circulaciones, elevadores y áreas comunes de la torre SIERRA.</p>
+            <a href="#galeria-a">Ver amenidades</a>
+          </div>
+        </article>
+        <article class="tower-feature">
+          <img data-edit-image="Torre AZUL" src="https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80" alt="Interior elegante de torre residencial" />
+          <div>
+            <p class="eyebrow">Torre</p>
+            <h3>AZUL</h3>
+            <p>Lobby, pasillos, elevadores, accesos y zonas comunes de la torre AZUL.</p>
+            <a href="#galeria-a">Ver amenidades</a>
+          </div>
+        </article>
+      </div>
+
+      <div class="gallery-heading" id="galeria-a">
+        <p class="eyebrow">Conjunto A</p>
+        <h3>Amenidades</h3>
+      </div>
+      <div class="gallery-strip" aria-label="Galería de amenidades del Conjunto A">
+        <img data-edit-image="Galería Conjunto A - Alberca" src="https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?auto=format&fit=crop&w=900&q=80" alt="Alberca residencial" />
+        <img data-edit-image="Galería Conjunto A - Jardín" src="https://images.unsplash.com/photo-1591825729269-caeb344f6df2?auto=format&fit=crop&w=900&q=80" alt="Jardín residencial" />
+        <img data-edit-image="Galería Conjunto A - GYM" src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=80" alt="Gimnasio equipado" />
+        <img data-edit-image="Galería Conjunto A - Lobby" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80" alt="Lobby residencial" />
+      </div>
+    </section>
+
+    <section class="section project-section" id="proyectos">
+      <div class="section-heading split">
+        <div>
+          <p class="eyebrow">Mantenimiento actual</p>
+          <h2>Proyectos en curso con seguimiento claro.</h2>
         </div>
+        <button class="icon-button" type="button" title="Agregar proyecto" data-admin-only>
+          <i data-lucide="plus"></i>
+        </button>
+      </div>
 
-        <div class="spec-panel reveal" aria-label="Capacidades AXERON">
-          <div>
-            <strong>24/7</strong>
-            <span>Atención prioritaria</span>
+      <div class="project-board">
+        <article class="project-card active" data-project-id="azoteas">
+          <span class="status project-status">En proceso</span>
+          <h3>Impermeabilización de azoteas</h3>
+          <p>Aplicación de sellador, revisión de bajantes y pruebas de humedad en SIERRA y AZUL.</p>
+          <div class="progress"><span style="width: 68%"></span></div>
+          <footer><span class="progress-value">68%</span><span>Entrega: Jun 2026</span></footer>
+          <div class="admin-progress" data-admin-only></div>
+          <div class="upload-pair">
+            <label>Antes <input type="file" accept="image/*" multiple data-max-files="20" data-project-gallery="before" /></label>
+            <label>Después <input type="file" accept="image/*" multiple data-max-files="20" data-project-gallery="after" /></label>
           </div>
-          <div>
-            <strong>Smart</strong>
-            <span>Cerraduras digitales</span>
+          <div class="project-photo-preview" data-gallery-preview="before"></div>
+          <div class="project-photo-preview" data-gallery-preview="after"></div>
+        </article>
+        <article class="project-card" data-project-id="pasillos">
+          <span class="status project-status">Programado</span>
+          <h3>Pintura de pasillos</h3>
+          <p>Renovación de muros, señalética y protecciones en niveles comunes.</p>
+          <div class="progress"><span style="width: 25%"></span></div>
+          <footer><span class="progress-value">25%</span><span>Inicio: Jul 2026</span></footer>
+          <div class="admin-progress" data-admin-only></div>
+          <div class="upload-pair">
+            <label>Antes <input type="file" accept="image/*" multiple data-max-files="20" data-project-gallery="before" /></label>
+            <label>Después <input type="file" accept="image/*" multiple data-max-files="20" data-project-gallery="after" /></label>
           </div>
-          <div>
-            <strong>Pro</strong>
-            <span>Herramienta especializada</span>
+          <div class="project-photo-preview" data-gallery-preview="before"></div>
+          <div class="project-photo-preview" data-gallery-preview="after"></div>
+        </article>
+        <article class="project-card" data-project-id="elevadores">
+          <span class="status project-status">Revisión</span>
+          <h3>Mantenimiento de elevadores</h3>
+          <p>Diagnóstico preventivo, bitácora de servicio y validación con proveedor certificado.</p>
+          <div class="progress"><span style="width: 42%"></span></div>
+          <footer><span class="progress-value">42%</span><span>Mensual</span></footer>
+          <div class="admin-progress" data-admin-only></div>
+          <div class="upload-pair">
+            <label>Antes <input type="file" accept="image/*" multiple data-max-files="20" data-project-gallery="before" /></label>
+            <label>Después <input type="file" accept="image/*" multiple data-max-files="20" data-project-gallery="after" /></label>
           </div>
-          <div>
-            <strong>VIP</strong>
-            <span>Trato discreto</span>
-          </div>
-        </div>
-      </section>
+          <div class="project-photo-preview" data-gallery-preview="before"></div>
+          <div class="project-photo-preview" data-gallery-preview="after"></div>
+        </article>
+      </div>
+    </section>
 
-      <section class="coverage section" id="cobertura">
-        <div class="section-heading reveal">
-          <p class="eyebrow">Cobertura actual</p>
-          <h2>Servicio especializado únicamente en Querétaro por el momento</h2>
-          <p>
-            Priorizamos zonas residenciales, condominios y corredores premium donde la seguridad,
-            la privacidad y la rapidez de respuesta son críticas.
-          </p>
-        </div>
-
-        <div class="coverage-layout">
-          <div class="map-panel reveal" aria-label="Mapa interactivo de cobertura premium en Querétaro">
-            <svg class="qro-map" viewBox="0 0 720 520" role="img" aria-label="Zonas premium de Querétaro">
-              <defs>
-                <linearGradient id="mapLine" x1="0" x2="1" y1="0" y2="1">
-                  <stop offset="0%" stop-color="#7dd3fc" stop-opacity="0.18" />
-                  <stop offset="100%" stop-color="#f7f8fa" stop-opacity="0.5" />
-                </linearGradient>
-              </defs>
-              <path class="map-shape" d="M116 86 C221 36 312 54 390 102 C470 151 580 137 630 218 C686 307 617 412 511 449 C421 480 356 432 267 445 C166 461 82 407 71 314 C62 231 44 125 116 86Z" />
-              <path class="map-route" d="M132 332 C218 281 263 242 335 255 C420 270 455 222 589 209" />
-              <path class="map-route route-two" d="M188 151 C240 211 305 230 376 214 C448 198 487 271 552 340" />
-
-              <circle class="map-zone is-active" data-zone="juriquilla" cx="180" cy="125" r="9" tabindex="0" role="button" aria-label="Juriquilla"></circle>
-              <circle class="map-zone" data-zone="jurica" cx="216" cy="239" r="9" tabindex="0" role="button" aria-label="Jurica"></circle>
-              <circle class="map-zone" data-zone="campanario" cx="403" cy="208" r="9" tabindex="0" role="button" aria-label="El Campanario"></circle>
-              <circle class="map-zone" data-zone="zibata" cx="526" cy="172" r="9" tabindex="0" role="button" aria-label="Zibatá"></circle>
-              <circle class="map-zone" data-zone="altozano" cx="461" cy="328" r="9" tabindex="0" role="button" aria-label="Altozano"></circle>
-              <circle class="map-zone" data-zone="cumbres" cx="144" cy="322" r="9" tabindex="0" role="button" aria-label="Cumbres del Lago"></circle>
-            </svg>
-
-            <div class="map-labels" aria-hidden="true">
-              <span style="--x: 25%; --y: 18%">Juriquilla</span>
-              <span style="--x: 30%; --y: 51%">Jurica</span>
-              <span style="--x: 56%; --y: 34%">El Campanario</span>
-              <span style="--x: 73%; --y: 27%">Zibatá</span>
-              <span style="--x: 64%; --y: 68%">Altozano</span>
-              <span style="--x: 20%; --y: 67%">Cumbres del Lago</span>
+    <section class="section" id="equipos">
+      <div class="section-heading">
+        <p class="eyebrow">Equipos operativos</p>
+        <h2>Personas responsables que sostienen el edificio.</h2>
+      </div>
+      <div class="team-grid">
+        <article data-team-id="mantenimiento">
+          <i data-lucide="wrench"></i>
+          <h3>Mantenimiento</h3>
+          <p>Responsables de reparaciones, rondines técnicos, proveedores y bitácoras.</p>
+          <div class="people-list" data-people-list="mantenimiento">
+            <div class="person-card" data-person-id="mantenimiento-lead" data-default-name="Miguel Cardona" data-default-role="Jefe de mantenimiento">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Miguel Cardona</strong><span>Jefe de mantenimiento</span></div>
+            </div>
+            <div class="person-card" data-person-id="mantenimiento-1" data-default-name="Héctor Díaz" data-default-role="Empleado a cargo 1">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Héctor Díaz</strong><span>Empleado a cargo 1</span></div>
+            </div>
+            <div class="person-card" data-person-id="mantenimiento-2" data-default-name="Empleado a cargo 2" data-default-role="Técnico de mantenimiento">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Empleado a cargo 2</strong><span>Técnico de mantenimiento</span></div>
+            </div>
+            <div class="person-card" data-person-id="mantenimiento-3" data-default-name="Empleado a cargo 3" data-default-role="Técnico de mantenimiento">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Empleado a cargo 3</strong><span>Técnico de mantenimiento</span></div>
             </div>
           </div>
-
-          <div class="zone-panel reveal">
-            <p class="eyebrow">Zona destacada</p>
-            <h3 id="zone-title">Juriquilla</h3>
-            <p id="zone-copy">
-              Cobertura para residencias, torres, condominios y accesos privados con atención discreta.
-            </p>
-            <div class="zone-actions" aria-label="Seleccionar zona">
-              <button class="zone-chip is-active" data-zone="juriquilla">Juriquilla</button>
-              <button class="zone-chip" data-zone="jurica">Jurica</button>
-              <button class="zone-chip" data-zone="campanario">El Campanario</button>
-              <button class="zone-chip" data-zone="zibata">Zibatá</button>
-              <button class="zone-chip" data-zone="altozano">Altozano</button>
-              <button class="zone-chip" data-zone="cumbres">Cumbres del Lago</button>
+        </article>
+        <article data-team-id="limpieza">
+          <i data-lucide="sparkles"></i>
+          <h3>Limpieza</h3>
+          <p>Equipo encargado de áreas comunes, lobbies, amenidades y circulaciones.</p>
+          <div class="people-list" data-people-list="limpieza">
+            <div class="person-card" data-person-id="limpieza-lead" data-default-name="Lucero Alvarado" data-default-role="Supervisora de limpieza">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Lucero Alvarado</strong><span>Supervisora de limpieza</span></div>
+            </div>
+            <div class="person-card" data-person-id="limpieza-1" data-default-name="Empleado de limpieza 1" data-default-role="Limpieza">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Empleado de limpieza 1</strong><span>Limpieza</span></div>
+            </div>
+            <div class="person-card" data-person-id="limpieza-2" data-default-name="Empleado de limpieza 2" data-default-role="Limpieza">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Empleado de limpieza 2</strong><span>Limpieza</span></div>
             </div>
           </div>
-        </div>
-      </section>
-
-      <section class="branch section" id="sucursal">
-        <div class="section-heading reveal">
-          <p class="eyebrow">Próxima sucursal AXERON</p>
-          <h2>Un centro de seguridad, fabricación y personalización tecnológica</h2>
-          <p>
-            Abriremos una sucursal pensada como taller premium. Su base será seguridad física y digital:
-            llaves, cerraduras, duplicados especializados, dispositivos NFC y accesorios inteligentes.
-            También integraremos próximamente grabado láser e impresión 3D.
-          </p>
-        </div>
-
-        <div class="branch-grid">
-          <article class="branch-card reveal">
-            <span>Próximo</span>
-            <h3>Grabados láser</h3>
-            <p>Personalización futura de placas, llaveros, identificadores, tags, piezas y accesorios.</p>
-          </article>
-          <article class="branch-card reveal">
-            <span>Próximo</span>
-            <h3>Impresión 3D</h3>
-            <p>Próximamente prototipos, soportes, cubiertas, piezas auxiliares y soluciones especiales.</p>
-          </article>
-          <article class="branch-card reveal">
-            <span>NFC</span>
-            <h3>Dispositivos NFC</h3>
-            <p>Tags, tarjetas, llaveros inteligentes y sistemas de identificación para accesos modernos.</p>
-          </article>
-          <article class="branch-card reveal">
-            <span>Llaves</span>
-            <h3>Llaves y cerraduras</h3>
-            <p>Duplicado, ajuste, instalación, cambio, mantenimiento y asesoría de seguridad física y digital.</p>
-          </article>
-          <article class="branch-card reveal">
-            <span>Auto</span>
-            <h3>Llaves automotrices</h3>
-            <p>Próximamente integraremos soluciones para llaves automotrices y servicios relacionados.</p>
-          </article>
-        </div>
-
-        <div class="capability-rail reveal" aria-label="Más capacidades de la sucursal">
-          <span>Duplicado de llaves</span>
-          <span>Cilindros y chapas</span>
-          <span>Tags NFC</span>
-          <span>Tarjetas de acceso</span>
-          <span>Herrajes premium</span>
-          <span>Control de acceso</span>
-          <span>Mantenimiento</span>
-          <span>Asesoría técnica</span>
-          <span>Próximamente grabado láser</span>
-          <span>Próximamente impresión 3D</span>
-          <span>Próximamente llaves automotrices</span>
-        </div>
-      </section>
-
-      <section class="confidence section" id="confianza">
-        <div class="section-heading reveal">
-          <p class="eyebrow">Por qué se siente confiable</p>
-          <h2>Una marca seria para entrar a espacios donde la confianza lo es todo</h2>
-        </div>
-
-        <div class="confidence-grid">
-          <div class="confidence-item reveal">
-            <h3>Imagen corporativa</h3>
-            <p>Una presencia sobria, moderna y premium para clientes que valoran profesionalismo.</p>
+        </article>
+        <article data-team-id="administracion">
+          <i data-lucide="briefcase-business"></i>
+          <h3>Administración</h3>
+          <p>Gestión de cuotas, comunicados, presupuestos, contratos y atención a residentes.</p>
+          <div class="people-list" data-people-list="administracion">
+            <div class="person-card" data-person-id="admin-lucero" data-default-name="Lucero Alvarado" data-default-role="Administradora">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Lucero Alvarado</strong><span>Administradora</span></div>
+            </div>
+            <div class="person-card" data-person-id="admin-renato" data-default-name="Renato Rivero" data-default-role="Administrador auxiliar">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Renato Rivero</strong><span>Administrador auxiliar</span></div>
+            </div>
           </div>
-          <div class="confidence-item reveal">
-            <h3>Discreción residencial</h3>
-            <p>Comunicación clara y atención respetuosa para hogares, adultos mayores y propiedades VIP.</p>
+        </article>
+        <article data-team-id="seguridad">
+          <i data-lucide="shield"></i>
+          <h3>Seguridad</h3>
+          <p>Alicia es empleada directa de SIERRAZUL. Guardias frecuentes provienen de Gescorp.</p>
+          <div class="people-list" data-people-list="seguridad">
+            <div class="person-card" data-person-id="seguridad-alicia" data-default-name="Alicia" data-default-role="Jefa de seguridad">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Alicia</strong><span>Jefa de seguridad</span></div>
+            </div>
+            <div class="person-card" data-person-id="seguridad-1" data-default-name="Guardia Gescorp 1" data-default-role="Guardia frecuente">
+              <div class="person-photo"></div>
+              <div><strong class="person-name">Guardia Gescorp 1</strong><span>Guardia frecuente</span></div>
+            </div>
           </div>
-          <div class="confidence-item reveal">
-            <h3>Capacidad técnica</h3>
-            <p>Soluciones para cerraduras mecánicas, digitales, accesos y actualizaciones de seguridad.</p>
-          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section amenity-section" id="amenidades">
+      <div class="section-heading split">
+        <div>
+          <p class="eyebrow">Amenidades</p>
+          <h2>Servicios que elevan la vida diaria.</h2>
         </div>
-      </section>
+        <p>Selecciona una amenidad para ver su información, fotos y lineamientos.</p>
+      </div>
+      <div class="amenity-grid">
+        <a class="amenity-card" href="#alberca">
+          <img data-edit-image="Amenidad - Alberca" src="https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?auto=format&fit=crop&w=900&q=80" alt="Alberca residencial" />
+          <span>Alberca</span>
+        </a>
+        <a class="amenity-card" href="#jardin">
+          <img data-edit-image="Amenidad - Jardín" src="https://images.unsplash.com/photo-1591825729269-caeb344f6df2?auto=format&fit=crop&w=900&q=80" alt="Jardín residencial" />
+          <span>Jardín</span>
+        </a>
+        <a class="amenity-card" href="#gym">
+          <img data-edit-image="Amenidad - GYM" src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=80" alt="Gimnasio equipado" />
+          <span>GYM</span>
+        </a>
+        <a class="amenity-card" href="#lobby">
+          <img data-edit-image="Amenidad - Lobby" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80" alt="Lobby residencial" />
+          <span>Lobby</span>
+        </a>
+        <a class="amenity-card coming-soon" href="#bar">
+          <img data-edit-image="Amenidad - Bar deportivo y billar" src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=900&q=80" alt="Bar con sala de deportes y mesa de billar" />
+          <span>Apertura próxima: bar deportivo y billar</span>
+        </a>
+      </div>
+    </section>
 
-      <section class="contact" id="contacto">
-        <div class="contact-inner reveal">
-          <p class="eyebrow">Atención inmediata y profesional</p>
-          <h2>Agenda una visita o solicita asistencia por WhatsApp</h2>
-          <p>
-            Ideal para emergencias, cambios de chapa, instalación de cerraduras inteligentes,
-            mantenimiento preventivo, evaluación de accesos residenciales y proyectos especiales
-            para la nueva sucursal tecnológica AXERON.
-          </p>
-          <div class="contact-actions">
-            <a class="primary-button" href="https://wa.me/525656154411" target="_blank" rel="noreferrer">
-            Contactar AXERON
-            </a>
-            <a class="secondary-button" href="tel:+525656154411">Llamar +52 56 5615 4411</a>
-          </div>
+    <section class="section amenity-detail" id="alberca" data-amenity-id="alberca" data-amenity-name="Alberca">
+      <div class="section-heading split">
+        <div>
+          <p class="eyebrow">Amenidad</p>
+          <h2>Alberca.</h2>
         </div>
-      </section>
-    </main>
+        <a class="secondary-link" href="#amenidades">Volver a amenidades</a>
+      </div>
+      <div class="amenity-detail-grid">
+        <div>
+          <div class="amenity-gallery" data-amenity-gallery>
+            <img data-edit-image="Alberca - Foto 1" src="https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?auto=format&fit=crop&w=900&q=80" alt="Vista de alberca residencial" />
+            <img data-edit-image="Alberca - Foto 2" src="https://images.unsplash.com/photo-1604014237800-1c9102c219da?auto=format&fit=crop&w=900&q=80" alt="Área de descanso junto a alberca" />
+            <img data-edit-image="Alberca - Foto 3" src="https://images.unsplash.com/photo-1572331165267-854da2b10ccc?auto=format&fit=crop&w=900&q=80" alt="Alberca con camastros" />
+          </div>
+          <label class="profile-upload amenity-upload">Fotos de alberca <input type="file" accept="image/*" multiple data-max-files="12" data-amenity-upload /></label>
+        </div>
+        <div class="rules-panel">
+          <h3>Reglamento</h3>
+          <ul>
+            <li>Uso exclusivo para residentes e invitados registrados.</li>
+            <li>Menores de edad siempre acompañados por un adulto.</li>
+            <li>No ingresar con vidrio, alimentos dentro del agua o objetos peligrosos.</li>
+            <li>Respetar horarios, aforo y limpieza del área.</li>
+          </ul>
+          <h3>Lineamientos</h3>
+          <ul>
+            <li>Usar traje de baño adecuado y toalla personal.</li>
+            <li>Reportar cualquier daño o incidente a administración.</li>
+            <li>Evitar música alta o actividades que afecten a otros residentes.</li>
+          </ul>
+          <label class="profile-upload rules-editor">
+            Editar reglamento y lineamientos
+            <textarea data-amenity-rules-editor rows="8"></textarea>
+          </label>
+        </div>
+      </div>
+    </section>
 
-    <footer class="site-footer">
-      <span>AXERON Security</span>
-      <span>Cerrajería de alta tecnología y seguridad residencial premium</span>
-    </footer>
+    <section class="section amenity-detail" id="jardin" data-amenity-id="jardin" data-amenity-name="Jardín">
+      <div class="section-heading split">
+        <div><p class="eyebrow">Amenidad</p><h2>Jardín.</h2></div>
+        <a class="secondary-link" href="#amenidades">Volver a amenidades</a>
+      </div>
+      <div class="amenity-detail-grid">
+        <div>
+          <div class="amenity-gallery" data-amenity-gallery>
+            <img data-edit-image="Jardín - Foto 1" src="https://images.unsplash.com/photo-1591825729269-caeb344f6df2?auto=format&fit=crop&w=900&q=80" alt="Jardín residencial" />
+            <img data-edit-image="Jardín - Foto 2" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80" alt="Terraza ajardinada" />
+            <img data-edit-image="Jardín - Foto 3" src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=900&q=80" alt="Área verde residencial" />
+          </div>
+          <label class="profile-upload amenity-upload">Fotos de jardín <input type="file" accept="image/*" multiple data-max-files="12" data-amenity-upload /></label>
+        </div>
+        <div class="rules-panel">
+          <h3>Reglamento</h3>
+          <ul>
+            <li>Conservar limpia el área y recoger pertenencias al retirarse.</li>
+            <li>Evitar dañar plantas, mobiliario o sistema de riego.</li>
+            <li>Los eventos deben ser autorizados por administración.</li>
+          </ul>
+          <h3>Lineamientos</h3>
+          <ul>
+            <li>Respetar horarios de uso y descanso de residentes.</li>
+            <li>No introducir mobiliario externo sin autorización.</li>
+          </ul>
+          <label class="profile-upload rules-editor">Editar reglamento y lineamientos<textarea data-amenity-rules-editor rows="8"></textarea></label>
+        </div>
+      </div>
+    </section>
 
-    <script src="script.js"></script>
-  </body>
+    <section class="section amenity-detail" id="gym" data-amenity-id="gym" data-amenity-name="GYM">
+      <div class="section-heading split">
+        <div><p class="eyebrow">Amenidad</p><h2>GYM.</h2></div>
+        <a class="secondary-link" href="#amenidades">Volver a amenidades</a>
+      </div>
+      <div class="amenity-detail-grid">
+        <div>
+          <div class="amenity-gallery" data-amenity-gallery>
+            <img data-edit-image="GYM - Foto 1" src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=80" alt="Gimnasio equipado" />
+            <img data-edit-image="GYM - Foto 2" src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=900&q=80" alt="Área de cardio" />
+            <img data-edit-image="GYM - Foto 3" src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=900&q=80" alt="Pesas de gimnasio" />
+          </div>
+          <label class="profile-upload amenity-upload">Fotos de GYM <input type="file" accept="image/*" multiple data-max-files="12" data-amenity-upload /></label>
+        </div>
+        <div class="rules-panel">
+          <h3>Reglamento</h3>
+          <ul>
+            <li>Usar ropa deportiva y toalla personal.</li>
+            <li>Limpiar los equipos después de usarlos.</li>
+            <li>No ingresar menores sin supervisión autorizada.</li>
+          </ul>
+          <h3>Lineamientos</h3>
+          <ul>
+            <li>Respetar turnos, horarios y uso responsable de equipos.</li>
+            <li>Reportar fallas o daños a administración.</li>
+          </ul>
+          <label class="profile-upload rules-editor">Editar reglamento y lineamientos<textarea data-amenity-rules-editor rows="8"></textarea></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="section amenity-detail" id="lobby" data-amenity-id="lobby" data-amenity-name="Lobby">
+      <div class="section-heading split">
+        <div><p class="eyebrow">Amenidad</p><h2>Lobby.</h2></div>
+        <a class="secondary-link" href="#amenidades">Volver a amenidades</a>
+      </div>
+      <div class="amenity-detail-grid">
+        <div>
+          <div class="amenity-gallery" data-amenity-gallery>
+            <img data-edit-image="Lobby - Foto 1" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80" alt="Lobby residencial" />
+            <img data-edit-image="Lobby - Foto 2" src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=900&q=80" alt="Recepción residencial" />
+            <img data-edit-image="Lobby - Foto 3" src="https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=900&q=80" alt="Sala de espera residencial" />
+          </div>
+          <label class="profile-upload amenity-upload">Fotos de lobby <input type="file" accept="image/*" multiple data-max-files="12" data-amenity-upload /></label>
+        </div>
+        <div class="rules-panel">
+          <h3>Reglamento</h3>
+          <ul>
+            <li>Mantener libre el paso y evitar obstruir accesos.</li>
+            <li>Registrar visitantes conforme al protocolo de seguridad.</li>
+            <li>No dejar paquetes u objetos personales sin autorización.</li>
+          </ul>
+          <h3>Lineamientos</h3>
+          <ul>
+            <li>Conservar un ambiente ordenado y silencioso.</li>
+            <li>Reportar incidencias en recepción o administración.</li>
+          </ul>
+          <label class="profile-upload rules-editor">Editar reglamento y lineamientos<textarea data-amenity-rules-editor rows="8"></textarea></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="section amenity-detail" id="bar" data-amenity-id="bar" data-amenity-name="Bar deportivo y billar">
+      <div class="section-heading split">
+        <div><p class="eyebrow">Amenidad</p><h2>Bar deportivo y billar.</h2></div>
+        <a class="secondary-link" href="#amenidades">Volver a amenidades</a>
+      </div>
+      <div class="amenity-detail-grid">
+        <div>
+          <div class="amenity-gallery" data-amenity-gallery>
+            <img data-edit-image="Bar deportivo - Foto 1" src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=900&q=80" alt="Bar deportivo" />
+            <img data-edit-image="Bar deportivo - Foto 2" src="https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?auto=format&fit=crop&w=900&q=80" alt="Mesa de billar" />
+            <img data-edit-image="Bar deportivo - Foto 3" src="https://images.unsplash.com/photo-1575444758702-4a6b9222336e?auto=format&fit=crop&w=900&q=80" alt="Sala para ver deportes" />
+          </div>
+          <label class="profile-upload amenity-upload">Fotos de bar deportivo <input type="file" accept="image/*" multiple data-max-files="12" data-amenity-upload /></label>
+        </div>
+        <div class="rules-panel">
+          <h3>Reglamento</h3>
+          <ul>
+            <li>Amenidad en apertura próxima, sujeta a calendario de administración.</li>
+            <li>Uso con reservación y cumplimiento de aforo.</li>
+            <li>El uso de mesa de billar y pantallas debe respetar turnos.</li>
+          </ul>
+          <h3>Lineamientos</h3>
+          <ul>
+            <li>Evitar ruido excesivo y cuidar mobiliario.</li>
+            <li>Los invitados deberán registrarse conforme a protocolo.</li>
+          </ul>
+          <label class="profile-upload rules-editor">Editar reglamento y lineamientos<textarea data-amenity-rules-editor rows="8"></textarea></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="plan">
+      <div class="section-heading">
+        <p class="eyebrow">Plan de mantenimiento futuro</p>
+        <h2>Línea cronológica de mantenimiento.</h2>
+      </div>
+      <div class="timeline">
+        <article>
+          <span>Mayo 2026</span>
+          <h3>Diagnóstico general</h3>
+          <p>Levantamiento de necesidades por torre, amenidades, proveedores y prioridades urgentes.</p>
+        </article>
+        <article>
+          <span>Junio 2026</span>
+          <h3>Azoteas e impermeabilización</h3>
+          <p>Corrección de filtraciones, pruebas de humedad y evidencia fotográfica antes/después.</p>
+        </article>
+        <article>
+          <span>Julio 2026</span>
+          <h3>Pasillos, pintura y señalética</h3>
+          <p>Renovación visual de áreas comunes, rutas de evacuación y señalización por nivel.</p>
+        </article>
+        <article>
+          <span>Agosto 2026</span>
+          <h3>Elevadores y accesos</h3>
+          <p>Bitácora de proveedor, revisión preventiva y mejora de protocolos de acceso.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>
+      <strong>SIERRAZUL</strong>
+      <span>Portal de administración y mantenimiento condominial.</span>
+    </div>
+    <a href="#inicio">Volver arriba</a>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="cloud-sync.js"></script>
+  <script src="script.js"></script>
+</body>
 </html>
