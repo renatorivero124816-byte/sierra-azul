@@ -808,3 +808,32 @@ function appendProjectCard(project) {
 function setProjectName(card, name) {
   card.querySelector("h3").textContent = name || "Proyecto sin nombre";
 }
+
+function buildAdminPanelTools() {
+  if (!adminToolList) return;
+  adminToolList.innerHTML = "";
+
+  const imageGroup = createAdminGroup("Imágenes principales");
+  document.querySelectorAll("[data-edit-image]").forEach((image) => {
+    if (image.closest(".amenity-section, .amenity-detail")) return;
+    imageGroup.appendChild(createImageTool(image.dataset.editImage, image.dataset.imageKey));
+  });
+  adminToolList.appendChild(imageGroup);
+
+  const projectGroup = createAdminGroup("Proyectos: avance y fotografías");
+  projectGroup.appendChild(createAddProjectTool());
+  document.querySelectorAll(".project-card").forEach((card) => {
+    projectGroup.appendChild(createProjectTool(card));
+  });
+  adminToolList.appendChild(projectGroup);
+
+  const peopleGroup = createAdminGroup("Personal y responsables");
+  document.querySelectorAll(".person-card").forEach((card) => {
+    peopleGroup.appendChild(createPersonTool(card));
+  });
+  adminToolList.appendChild(peopleGroup);
+
+  wireAdminPersonTools();
+  wireAdminProjectTools();
+  wireImageReplacement();
+}

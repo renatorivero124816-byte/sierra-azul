@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SIERRAZUL | Portal Residencial</title>
+  <title>SIERRAZUL | Mantenimiento</title>
   <link rel="preconnect" href="https://images.unsplash.com" />
   <link rel="preconnect" href="https://unpkg.com" />
   <link rel="stylesheet" href="styles.css" />
@@ -68,38 +68,36 @@
         <span class="brand-mark">SA</span>
         <span>
           <strong>SIERRAZUL</strong>
-          <small>Administración Condominial</small>
+          <small>Seguimiento de Mantenimiento</small>
         </span>
       </a>
       <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false">
         <i data-lucide="menu"></i>
       </button>
       <div class="nav-links">
-        <a href="#torres">Torres</a>
         <a href="#proyectos">Proyectos</a>
         <a href="#equipos">Equipos</a>
-        <a href="#amenidades">Amenidades</a>
-        <a href="#plan">Plan futuro</a>
+        <a href="#plan">Cronología</a>
       </div>
     </nav>
 
     <section class="hero">
       <div class="hero-content">
-        <p class="eyebrow">Portal privado para residentes</p>
-        <h1>SIERRAZUL, gestión elegante para un condominio en movimiento.</h1>
+        <p class="eyebrow">Portal privado de mantenimiento</p>
+        <h1>SIERRAZUL, seguimiento claro de trabajos y proyectos.</h1>
         <p class="hero-copy">
-          Un espacio central para visualizar avances, fotografías de amenidades,
-          equipos operativos, seguridad y el plan cronológico de mantenimiento.
+          Un espacio central para documentar trabajos de mantenimiento, subir evidencias,
+          comparar fotografías antes/después y comunicar avances a directivos.
         </p>
         <div class="hero-actions">
           <a class="primary-action" href="#proyectos">Ver proyectos activos</a>
-          <a class="secondary-action" href="#torres">Explorar torres</a>
+          <a class="secondary-action" href="#equipos">Ver responsables</a>
         </div>
       </div>
       <div class="hero-status" aria-label="Resumen del condominio">
-        <span><strong>2</strong> torres</span>
-        <span><strong>SIERRA</strong> y AZUL</span>
-        <span><strong>8</strong> proyectos activos</span>
+        <span><strong>100%</strong> evidencias</span>
+        <span><strong>Antes</strong> y después</span>
+        <span><strong>Proyectos</strong> editables</span>
       </div>
     </section>
   </header>
@@ -108,71 +106,29 @@
     <section class="section intro-band">
       <div class="section-heading">
         <p class="eyebrow">Vista general</p>
-        <h2>Todo SIERRAZUL desde una sola página.</h2>
+        <h2>Todo el mantenimiento en una sola página.</h2>
       </div>
       <div class="metric-grid">
         <article>
-          <i data-lucide="building-2"></i>
-          <strong>Torres SIERRA y AZUL</strong>
-          <span>Galerías, información y avances por torre.</span>
+          <i data-lucide="folder-kanban"></i>
+          <strong>Proyectos activos</strong>
+          <span>Trabajos, responsables, estatus y porcentajes de avance.</span>
         </article>
         <article>
           <i data-lucide="clipboard-check"></i>
-          <strong>Mantenimiento vivo</strong>
-          <span>Obras activas, responsables, fechas, estatus y fotografías.</span>
+          <strong>Evidencia fotográfica</strong>
+          <span>Fotos antes y después para documentar cada intervención.</span>
         </article>
         <article>
-          <i data-lucide="shield-check"></i>
-          <strong>Operación diaria</strong>
-          <span>Administración, limpieza, mantenimiento y seguridad.</span>
+          <i data-lucide="users-round"></i>
+          <strong>Responsables</strong>
+          <span>Equipo interno, proveedores y personas a cargo por área.</span>
         </article>
         <article>
           <i data-lucide="calendar-clock"></i>
-          <strong>Plan cronológico</strong>
-          <span>Prioridades futuras para presupuestar y comunicar.</span>
+          <strong>Cronología</strong>
+          <span>Seguimiento histórico y próximos trabajos programados.</span>
         </article>
-      </div>
-    </section>
-
-    <section class="section" id="torres">
-      <div class="section-heading split">
-        <div>
-          <p class="eyebrow">Torres</p>
-          <h2>Torres SIERRA y AZUL.</h2>
-        </div>
-        <p>Cada torre puede mostrar información, avances, fotografías y evidencias de mantenimiento.</p>
-      </div>
-
-      <div class="tower-grid">
-        <article class="tower-feature">
-          <img data-edit-image="Torre SIERRA" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80" alt="Vista exterior de torre residencial moderna" />
-          <div>
-            <p class="eyebrow">Torre</p>
-            <h3>SIERRA</h3>
-            <p>Acceso principal, lobby, circulaciones, elevadores y áreas comunes de la torre SIERRA.</p>
-            <a href="#galeria-a">Ver amenidades</a>
-          </div>
-        </article>
-        <article class="tower-feature">
-          <img data-edit-image="Torre AZUL" src="https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80" alt="Interior elegante de torre residencial" />
-          <div>
-            <p class="eyebrow">Torre</p>
-            <h3>AZUL</h3>
-            <p>Lobby, pasillos, elevadores, accesos y zonas comunes de la torre AZUL.</p>
-            <a href="#galeria-a">Ver amenidades</a>
-          </div>
-        </article>
-      </div>
-
-      <div class="gallery-heading" id="galeria-a">
-        <p class="eyebrow">Conjunto A</p>
-        <h3>Amenidades</h3>
-      </div>
-      <div class="gallery-strip" aria-label="Galería de amenidades del Conjunto A">
-        <img data-edit-image="Galería Conjunto A - Alberca" src="https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?auto=format&fit=crop&w=900&q=80" alt="Alberca residencial" />
-        <img data-edit-image="Galería Conjunto A - Jardín" src="https://images.unsplash.com/photo-1591825729269-caeb344f6df2?auto=format&fit=crop&w=900&q=80" alt="Jardín residencial" />
-        <img data-edit-image="Galería Conjunto A - GYM" src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=80" alt="Gimnasio equipado" />
-        <img data-edit-image="Galería Conjunto A - Lobby" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80" alt="Lobby residencial" />
       </div>
     </section>
 
@@ -180,7 +136,7 @@
       <div class="section-heading split">
         <div>
           <p class="eyebrow">Mantenimiento actual</p>
-          <h2>Proyectos en curso con seguimiento claro.</h2>
+          <h2>Trabajos y proyectos de mantenimiento.</h2>
         </div>
         <button class="icon-button" type="button" title="Agregar proyecto" data-admin-only>
           <i data-lucide="plus"></i>
@@ -235,8 +191,8 @@
 
     <section class="section" id="equipos">
       <div class="section-heading">
-        <p class="eyebrow">Equipos operativos</p>
-        <h2>Personas responsables que sostienen el edificio.</h2>
+        <p class="eyebrow">Responsables</p>
+        <h2>Personas responsables del mantenimiento.</h2>
       </div>
       <div class="team-grid">
         <article data-team-id="mantenimiento">
@@ -265,7 +221,7 @@
         <article data-team-id="limpieza">
           <i data-lucide="sparkles"></i>
           <h3>Limpieza</h3>
-          <p>Equipo encargado de áreas comunes, lobbies, amenidades y circulaciones.</p>
+          <p>Equipo encargado de limpieza en áreas comunes y apoyo operativo a trabajos de mantenimiento.</p>
           <div class="people-list" data-people-list="limpieza">
             <div class="person-card" data-person-id="limpieza-lead" data-default-name="Lucero Alvarado" data-default-role="Supervisora de limpieza">
               <div class="person-photo"></div>
@@ -511,14 +467,14 @@
 
     <section class="section" id="plan">
       <div class="section-heading">
-        <p class="eyebrow">Plan de mantenimiento futuro</p>
-        <h2>Línea cronológica de mantenimiento.</h2>
+        <p class="eyebrow">Cronología</p>
+        <h2>Línea cronológica de trabajos.</h2>
       </div>
       <div class="timeline">
         <article>
           <span>Mayo 2026</span>
           <h3>Diagnóstico general</h3>
-          <p>Levantamiento de necesidades por torre, amenidades, proveedores y prioridades urgentes.</p>
+          <p>Levantamiento de necesidades, proveedores, prioridades urgentes y evidencias iniciales.</p>
         </article>
         <article>
           <span>Junio 2026</span>
