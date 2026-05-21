@@ -85,6 +85,8 @@ wireImageReplacement();
 wireProjectPhotoUploads();
 wireInlinePersonEditors();
 wireAmenityTools();
+initMaintenance3DScene();
+window.SierraAzulMotionFallback = initPageWideAnimations;
 
 function openAdminPanel() {
   adminPanel.classList.add("open");
@@ -108,6 +110,408 @@ function setAdminMode(isActive) {
   adminLogin.hidden = isActive;
   adminTools.hidden = !isActive;
   adminMessage.textContent = isActive ? "Modo administrador activo." : "";
+}
+
+function initMaintenance3DScene() {
+  const canvas = document.querySelector("#maintenanceScene");
+  const container = canvas?.closest(".maintenance-3d-scene");
+  const THREE = window.THREE;
+  const sceneProfile = getMaintenanceSceneProfile();
+
+  if (!canvas || !container) return;
+  if (!THREE) {
+    showMaintenanceSceneFallback(container);
+    return;
+  }
+
+  let renderer;
+
+  try {
+    renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: sceneProfile.antialias,
+      alpha: true,
+      powerPreference: sceneProfile.lowPower ? "low-power" : "high-performance",
+    });
+  } catch {
+    showMaintenanceSceneFallback(container);
+    return;
+  }
+
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x060908, 0.045);
+
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 120);
+  const clock = new THREE.Clock();
+  const pointer = { x: 0, y: 0 };
+
+  camera.position.set(0, 3.8, 9.2);
+  camera.lookAt(0, 0.65, 0);
+
+  renderer.setPixelRatio(sceneProfile.pixelRatio);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+  scene.add(new THREE.HemisphereLight(0xdce9ed, 0x060908, 1.8));
+
+  const keyLight = new THREE.DirectionalLight(0xffd3ad, 2.9);
+  keyLight.position.set(4, 7, 6);
+  scene.add(keyLight);
+
+  const rimLight = new THREE.DirectionalLight(0x5dc1c0, 2.4);
+  rimLight.position.set(-5, 4, -5);
+  scene.add(rimLight);
+
+  const pulseLight = new THREE.PointLight(0xf1b684, 8, 14);
+  pulseLight.position.set(0, 1.4, 0);
+  scene.add(pulseLight);
+
+  const root = new THREE.Group();
+  scene.add(root);
+
+  const platformMaterial = new THREE.MeshStandardMaterial({
+    color: 0x13241f,
+    metalness: 0.5,
+    roughness: 0.38,
+  });
+  const copperMaterial = new THREE.MeshStandardMaterial({
+    color: 0xf1a466,
+    metalness: 0.42,
+    roughness: 0.28,
+    emissive: 0x3a1407,
+    emissiveIntensity: 0.45,
+  });
+  const glassMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xdce9ed,
+    metalness: 0.05,
+    roughness: 0.18,
+    transmission: 0.22,
+    transparent: true,
+    opacity: 0.56,
+  });
+  const cyanMaterial = new THREE.MeshBasicMaterial({
+    color: 0x7fe7e3,
+    transparent: true,
+    opacity: 0.72,
+  });
+  const darkMaterial = new THREE.MeshStandardMaterial({
+    color: 0x07100d,
+    metalness: 0.44,
+    roughness: 0.45,
+  });
+
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(3.45, 3.9, 0.22, 6), platformMaterial);
+  base.position.y = -0.18;
+  base.rotation.y = Math.PI / 6;
+  root.add(base);
+
+  const gridMaterial = new THREE.LineBasicMaterial({ color: 0x7fe7e3, transparent: true, opacity: 0.18 });
+  for (let index = -sceneProfile.gridLimit; index <= sceneProfile.gridLimit; index += sceneProfile.gridStep) {
+    const horizontal = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-5.4, -0.05, index),
+      new THREE.Vector3(5.4, -0.05, index),
+    ]);
+    const vertical = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(index, -0.05, -5.4),
+      new THREE.Vector3(index, -0.05, 5.4),
+    ]);
+    root.add(new THREE.Line(horizontal, gridMaterial));
+    root.add(new THREE.Line(vertical, gridMaterial));
+  }
+
+  const rings = (sceneProfile.lowPower ? [2.5, 3.3] : [2.5, 3.08, 3.62]).map((radius, index) => {
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(radius, 0.018 + index * 0.004, 14, 128),
+      new THREE.MeshBasicMaterial({
+        color: index === 1 ? 0xf1b684 : 0x7fe7e3,
+        transparent: true,
+        opacity: index === 1 ? 0.76 : 0.42,
+      })
+    );
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = 0.12 + index * 0.18;
+    root.add(ring);
+    return ring;
+  });
+
+  const commandCore = new THREE.Group();
+  root.add(commandCore);
+
+  const coreHeights = (sceneProfile.lowPower ? [2.9, 2.05, 1.55] : [2.9, 2.2, 1.75, 2.45, 1.35]);
+  coreHeights.forEach((height, index) => {
+    const angle = index * ((Math.PI * 2) / coreHeights.length) + Math.PI / 5;
+    const radius = index === 0 ? 0 : 1.02 + (index % 2) * 0.36;
+    const core = new THREE.Mesh(new THREE.BoxGeometry(0.48, height, 0.48), glassMaterial);
+    core.position.set(Math.cos(angle) * radius, height / 2, Math.sin(angle) * radius);
+    core.rotation.y = -angle + Math.PI / 4;
+    commandCore.add(core);
+
+    const top = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.06, 0.62), copperMaterial);
+    top.position.set(core.position.x, height + 0.05, core.position.z);
+    top.rotation.y = core.rotation.y;
+    commandCore.add(top);
+  });
+
+  const progressValues = [0.68, 0.42, 0.25];
+  const progressArcs = [];
+  progressValues.forEach((value, index) => {
+    const arc = new THREE.Mesh(
+      new THREE.TorusGeometry(1.35 + index * 0.36, 0.035, 14, 84, Math.PI * 2 * value),
+      index === 0 ? copperMaterial : cyanMaterial
+    );
+    arc.rotation.x = Math.PI / 2;
+    arc.rotation.z = index * 1.8;
+    arc.position.y = 2.55 + index * 0.34;
+    commandCore.add(arc);
+    progressArcs.push(arc);
+  });
+
+  const evidenceGroup = new THREE.Group();
+  root.add(evidenceGroup);
+
+  for (let index = 0; index < sceneProfile.evidenceCount; index += 1) {
+    const angle = index * ((Math.PI * 2) / sceneProfile.evidenceCount);
+    const tile = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.28, 0.028), index % 3 === 0 ? copperMaterial : glassMaterial);
+    tile.position.set(Math.cos(angle) * 3.05, 1.38 + Math.sin(index * 1.7) * 0.34, Math.sin(angle) * 3.05);
+    tile.rotation.set(0.2, -angle + Math.PI / 2, 0.06);
+    evidenceGroup.add(tile);
+  }
+
+  const pointMaterials = [
+    new THREE.MeshBasicMaterial({ color: 0xf1b684 }),
+    new THREE.MeshBasicMaterial({ color: 0x7fe7e3 }),
+  ];
+  for (let index = 0; index < sceneProfile.pointCount; index += 1) {
+    const angle = index * ((Math.PI * 2) / sceneProfile.pointCount);
+    const radius = 2.2 + (index % 4) * 0.48;
+    const point = new THREE.Mesh(new THREE.SphereGeometry(0.028 + (index % 3) * 0.009, 10, 10), pointMaterials[index % 2]);
+    point.position.set(Math.cos(angle) * radius, 0.18 + (index % 5) * 0.1, Math.sin(angle) * radius);
+    root.add(point);
+  }
+
+  const resize = () => {
+    const width = Math.max(container.clientWidth, 320);
+    const height = Math.max(container.clientHeight, 360);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height, false);
+  };
+
+  const onPointerMove = (event) => {
+    if (sceneProfile.mobile) return;
+    const rect = container.getBoundingClientRect();
+    pointer.x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+    pointer.y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+  };
+
+  container.addEventListener("pointermove", onPointerMove, { passive: true });
+
+  const resizeObserver = new ResizeObserver(debounce(resize, 120));
+  resizeObserver.observe(container);
+  resize();
+
+  let sceneVisible = true;
+  let lastRender = 0;
+  let animationId = 0;
+  const minFrameMs = 1000 / sceneProfile.fps;
+
+  const visibilityObserver = new IntersectionObserver((entries) => {
+    sceneVisible = entries.some((entry) => entry.isIntersecting);
+    if (sceneVisible) resumeScene();
+  }, { rootMargin: "160px 0px" });
+  visibilityObserver.observe(container);
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) resumeScene();
+  });
+
+  const animate = (time = 0) => {
+    if (!sceneVisible || document.hidden || document.body.classList.contains("site-locked")) {
+      animationId = 0;
+      return;
+    }
+
+    animationId = requestAnimationFrame(animate);
+    if (time - lastRender < minFrameMs) return;
+    lastRender = time;
+
+    const elapsed = clock.getElapsedTime();
+    root.rotation.y = elapsed * 0.15 + pointer.x * 0.28;
+    root.rotation.x = pointer.y * 0.1;
+    commandCore.rotation.y = -elapsed * 0.18;
+    evidenceGroup.rotation.y = elapsed * 0.48;
+    pulseLight.intensity = 7 + Math.sin(elapsed * 2.6) * 2.8;
+
+    rings.forEach((ring, index) => {
+      ring.rotation.z = elapsed * (0.24 + index * 0.12) * (index % 2 ? -1 : 1);
+      ring.position.y = 0.18 + index * 0.18 + Math.sin(elapsed * 1.2 + index) * 0.05;
+    });
+
+    progressArcs.forEach((arc, index) => {
+      arc.rotation.z += 0.008 + index * 0.004;
+      arc.position.y = 2.52 + index * 0.34 + Math.sin(elapsed * 1.8 + index) * 0.08;
+    });
+
+    evidenceGroup.children.forEach((tile, index) => {
+      tile.position.y = 1.38 + Math.sin(elapsed * 1.65 + index) * 0.34;
+      tile.rotation.z = Math.sin(elapsed + index) * 0.12;
+    });
+
+    renderer.render(scene, camera);
+  };
+
+  function resumeScene() {
+    if (animationId || document.hidden || !sceneVisible || document.body.classList.contains("site-locked")) return;
+    lastRender = 0;
+    animationId = requestAnimationFrame(animate);
+  }
+
+  const lockObserver = new MutationObserver(resumeScene);
+  lockObserver.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+  resumeScene();
+}
+
+function showMaintenanceSceneFallback(container) {
+  container.innerHTML = '<div class="maintenance-3d-fallback">Vista 3D disponible al cargar el sitio publicado.</div>';
+}
+
+function getMaintenanceSceneProfile() {
+  const width = window.innerWidth || 1280;
+  const coarse = window.matchMedia?.("(pointer: coarse)")?.matches;
+  const saveData = navigator.connection?.saveData;
+  const cores = navigator.hardwareConcurrency || 4;
+  const memory = navigator.deviceMemory || 4;
+  const mobile = width <= 760 || coarse;
+  const lowPower = saveData || cores <= 4 || memory <= 3 || width <= 420;
+
+  return {
+    mobile,
+    lowPower,
+    antialias: !lowPower,
+    pixelRatio: Math.min(window.devicePixelRatio || 1, lowPower ? 1 : mobile ? 1.2 : 1.65),
+    fps: lowPower ? 24 : mobile ? 30 : 48,
+    gridLimit: lowPower ? 4 : 5,
+    gridStep: lowPower ? 2 : 1,
+    evidenceCount: lowPower ? 8 : mobile ? 12 : 18,
+    pointCount: lowPower ? 18 : mobile ? 28 : 42,
+  };
+}
+
+function debounce(callback, delay = 120) {
+  let timeout;
+  return (...args) => {
+    window.clearTimeout(timeout);
+    timeout = window.setTimeout(() => callback(...args), delay);
+  };
+}
+
+function initPageWideAnimations() {
+  const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  const progress = document.createElement("div");
+  progress.className = "scroll-progress";
+  document.body.prepend(progress);
+  document.body.classList.add("page-motion-ready");
+
+  const revealTargets = [
+    ".hero-content",
+    ".hero-status",
+    ".section-heading",
+    ".metric-grid article",
+    ".project-card",
+    ".team-grid article",
+    ".person-card",
+    ".amenity-card",
+    ".amenity-detail-grid",
+    ".rules-panel",
+    ".timeline",
+    ".timeline article",
+    ".footer > *",
+  ];
+
+  document.querySelectorAll(revealTargets.join(",")).forEach((element, index) => {
+    element.classList.add("motion-reveal");
+    element.style.setProperty("--motion-delay", `${Math.min(index % 6, 5) * 70}ms`);
+  });
+
+  document.querySelectorAll(".metric-grid article, .project-card, .team-grid article, .amenity-card").forEach((card) => {
+    card.classList.add("motion-card");
+    card.addEventListener("pointermove", (event) => {
+      if (reduceMotion) return;
+      const rect = card.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+      card.style.setProperty("--tilt-x", `${(-y * 5).toFixed(2)}deg`);
+      card.style.setProperty("--tilt-y", `${(x * 7).toFixed(2)}deg`);
+      card.style.setProperty("--shine-x", `${event.clientX - rect.left}px`);
+      card.style.setProperty("--shine-y", `${event.clientY - rect.top}px`);
+    });
+    card.addEventListener("pointerleave", () => {
+      card.style.removeProperty("--tilt-x");
+      card.style.removeProperty("--tilt-y");
+    });
+  });
+
+  const progressBars = [...document.querySelectorAll(".project-card .progress span")].map((bar) => {
+    const savedWidth = bar.style.width || `${bar.getBoundingClientRect().width}px`;
+    bar.dataset.motionWidth = savedWidth;
+    bar.style.width = "0%";
+    return bar;
+  });
+
+  const animateCounters = (root) => {
+    root.querySelectorAll(".progress-value, .hero-status strong, .visual-kpis strong").forEach((element) => {
+      if (element.dataset.counted) return;
+      const text = element.textContent.trim();
+      const match = text.match(/^(\d+)(%?)(.*)$/);
+      if (!match || text.includes("/")) return;
+      element.dataset.counted = "true";
+      const target = Number(match[1]);
+      const suffix = `${match[2]}${match[3] || ""}`;
+      let startTime;
+
+      const tick = (time) => {
+        startTime ??= time;
+        const progressValue = Math.min((time - startTime) / 950, 1);
+        const eased = 1 - Math.pow(1 - progressValue, 3);
+        element.textContent = `${Math.round(target * eased)}${suffix}`;
+        if (progressValue < 1) requestAnimationFrame(tick);
+      };
+
+      requestAnimationFrame(tick);
+    });
+  };
+
+  if (reduceMotion || !("IntersectionObserver" in window)) {
+    document.querySelectorAll(".motion-reveal").forEach((element) => element.classList.add("is-visible"));
+    progressBars.forEach((bar) => {
+      bar.style.width = bar.dataset.motionWidth || "";
+    });
+    animateCounters(document);
+  } else {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        entry.target.querySelectorAll?.(".progress span").forEach((bar) => {
+          bar.style.width = bar.dataset.motionWidth || "";
+        });
+        animateCounters(entry.target);
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" });
+
+    document.querySelectorAll(".motion-reveal").forEach((element) => observer.observe(element));
+  }
+
+  const updateScrollProgress = () => {
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    const value = scrollable > 0 ? window.scrollY / scrollable : 0;
+    progress.style.transform = `scaleX(${Math.min(Math.max(value, 0), 1)})`;
+    document.body.style.setProperty("--page-scroll", value.toFixed(4));
+  };
+
+  updateScrollProgress();
+  window.addEventListener("scroll", updateScrollProgress, { passive: true });
+  window.addEventListener("resize", updateScrollProgress);
 }
 
 function loadState() {
@@ -701,12 +1105,6 @@ function buildAdminPanelTools() {
   });
   adminToolList.appendChild(projectGroup);
 
-  const quoteGroup = createAdminGroup("Cotizaciones: PDF por proveedor");
-  document.querySelectorAll(".quote-card").forEach((card) => {
-    quoteGroup.appendChild(createQuoteTool(card));
-  });
-  adminToolList.appendChild(quoteGroup);
-
   const peopleGroup = createAdminGroup("Personal y responsables");
   document.querySelectorAll(".person-card").forEach((card) => {
     peopleGroup.appendChild(createPersonTool(card));
@@ -715,7 +1113,6 @@ function buildAdminPanelTools() {
 
   wireAdminPersonTools();
   wireAdminProjectTools();
-  wireAdminQuoteTools();
   wireImageReplacement();
 }
 
@@ -760,6 +1157,7 @@ function setQuotePdf(card, quote) {
   }
 
   function createMobilePrivacyGate() {
+    return;
     if (!isTouchPhone || document.querySelector(".mobile-privacy-gate")) return;
     const gate = document.createElement("div");
     gate.className = "mobile-privacy-gate";
