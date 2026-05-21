@@ -744,6 +744,145 @@ function setQuotePdf(card, quote) {
 }
 
 (() => {
+  let mobileBlurTimer;
+  let longTouchTimer;
+  const isAppleTouchDevice = /iPad|iPhone|iPod/.test(navigator.userAgent)
+    || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isTouchPhone = navigator.maxTouchPoints > 0
+    && window.matchMedia("(max-width: 1024px) and (pointer: coarse)").matches;
+
+  function isEditableTarget(target) {
+    return target?.closest?.("input, textarea, select, [contenteditable='true']");
+  }
+
+  function isPrivacyControl(target) {
+    return target?.closest?.(".mobile-privacy-gate, .mobile-privacy-hold");
+  }
+
+  function createMobilePrivacyGate() {
+    if (!isTouchPhone || document.querySelector(".mobile-privacy-gate")) return;
+    const gate = document.createElement("div");
+    gate.className = "mobile-privacy-gate";
+    gate.innerHTML = `<button class="mobile-privacy-hold" type="button" aria-label="Mantener presionado para ver el contenido">Mantén presionado para ver</button>`;
+    document.body.appendChild(gate);
+    document.body.classList.add("mobile-privacy-enabled", "mobile-privacy-locked");
+
+    const holdButton = gate.querySelector(".mobile-privacy-hold");
+    const reveal = (event) => {
+      event.preventDefault();
+      document.body.classList.remove("mobile-privacy-locked", "security-mobile");
+      holdButton.textContent = "Contenido visible mientras presionas";
+    };
+    const lock = () => {
+      document.body.classList.add("mobile-privacy-locked");
+      holdButton.textContent = "Mantén presionado para ver";
+    };
+
+    holdButton.addEventListener("pointerdown", reveal);
+    holdButton.addEventListener("pointerup", lock);
+    holdButton.addEventListener("pointercancel", lock);
+    holdButton.addEventListener("pointerleave", lock);
+    holdButton.addEventListener("touchstart", reveal, { passive: false });
+    holdButton.addEventListener("touchend", lock);
+    holdButton.addEventListener("touchcancel", lock);
+  }
+
+  function blurForMobileProtection() {
+    if (document.body.classList.contains("site-locked")) return;
+    document.body.classList.add("security-mobile");
+    if (document.body.classList.contains("mobile-privacy-enabled")) {
+      document.body.classList.add("mobile-privacy-locked");
+    }
+    window.clearTimeout(mobileBlurTimer);
+    mobileBlurTimer = window.setTimeout(() => {
+      document.body.classList.remove("security-mobile");
+    }, 10000);
+  }
+
+  function clearPauseAndProtectOnReturn() {
+    document.body.classList.remove("security-paused");
+    if (isAppleTouchDevice) {
+      blurForMobileProtection();
+    }
+  }
+
+  function clearLongTouch() {
+    window.clearTimeout(longTouchTimer);
+  }
+
+  document.addEventListener("touchstart", (event) => {
+    if (isEditableTarget(event.target) || isPrivacyControl(event.target)) return;
+    if (event.touches.length > 1) {
+      event.preventDefault();
+      blurForMobileProtection();
+      return;
+    }
+    clearLongTouch();
+    longTouchTimer = window.setTimeout(blurForMobileProtection, 700);
+  }, { capture: true, passive: false });
+
+  document.addEventListener("touchend", clearLongTouch, true);
+  document.addEventListener("touchcancel", clearLongTouch, true);
+  document.addEventListener("touchmove", (event) => {
+    if (isPrivacyControl(event.target)) return;
+    if (event.touches.length > 1) {
+      event.preventDefault();
+      blurForMobileProtection();
+      return;
+    }
+    clearLongTouch();
+  }, { capture: true, passive: false });
+
+  document.addEventListener("gesturestart", (event) => {
+    event.preventDefault();
+    blurForMobileProtection();
+  }, { capture: true, passive: false });
+
+  document.addEventListener("gesturechange", (event) => {
+    event.preventDefault();
+    blurForMobileProtection();
+  }, { capture: true, passive: false });
+
+  document.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "touch" || isEditableTarget(event.target) || isPrivacyControl(event.target)) return;
+    clearLongTouch();
+    longTouchTimer = window.setTimeout(blurForMobileProtection, 700);
+  }, true);
+
+  document.addEventListener("pointerup", clearLongTouch, true);
+  document.addEventListener("pointercancel", clearLongTouch, true);
+
+  document.addEventListener("selectstart", (event) => {
+    if (isEditableTarget(event.target) || isPrivacyControl(event.target)) return;
+    event.preventDefault();
+  }, true);
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+      document.body.classList.add("security-paused");
+      return;
+    }
+    clearPauseAndProtectOnReturn();
+  });
+
+  window.addEventListener("pagehide", () => {
+    document.body.classList.add("security-paused");
+  });
+
+  window.addEventListener("pageshow", clearPauseAndProtectOnReturn);
+
+  window.addEventListener("focus", () => {
+    if (isAppleTouchDevice) {
+      blurForMobileProtection();
+    }
+  });
+
+  window.addEventListener("orientationchange", blurForMobileProtection);
+
+  createMobilePrivacyGate();
+})();
+
+(() => {
   const shieldText = "Contenido privado de SIERRAZUL. Capturas, impresión y descarga no autorizada están restringidas.";
   let shieldTimer;
   let captureBlurTimer;
@@ -788,8 +927,9 @@ function setQuotePdf(card, quote) {
     const withControl = event.ctrlKey || event.metaKey;
     const blockedCombo = withControl && ["p", "s", "u"].includes(key);
     const blockedDevTools = key === "f12" || (withControl && event.shiftKey && ["i", "j", "c"].includes(key));
+    const blockedAppleScreenshot = event.metaKey && event.shiftKey && ["3", "4", "5"].includes(key);
 
-    if (event.key === "PrintScreen") {
+    if (event.key === "PrintScreen" || blockedAppleScreenshot) {
       event.preventDefault();
       navigator.clipboard?.writeText("Captura restringida por SIERRAZUL.").catch(() => {});
       blurForCapture();
