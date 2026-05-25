@@ -509,8 +509,6 @@
     let lastY = window.scrollY;
     let velocity = 0;
     let ticking = false;
-    const commandScene = document.querySelector(".command-mode .maintenance-3d-scene");
-    const commandCopy = document.querySelector(".command-mode .maintenance-visual-copy");
     const parallaxImages = [...document.querySelectorAll(".amenity-card img, .amenity-gallery img")];
     const visibleParallaxImages = new Set();
 
@@ -520,16 +518,6 @@
       velocity += (Math.min(Math.abs(currentY - lastY) / 90, 1) - velocity) * 0.12;
       lastY = currentY;
       document.body.style.setProperty("--premium-velocity", velocity.toFixed(4));
-
-      if (commandScene) {
-        const section = commandScene.closest(".command-mode");
-        const rect = section.getBoundingClientRect();
-        const progress = clamp((window.innerHeight - rect.top) / (rect.height + window.innerHeight), 0, 1);
-        commandScene.style.transform = `translate3d(${progress * -5}vw, ${progress * -5}vh, 0) scale(${1 + progress * 0.13})`;
-        if (commandCopy) {
-          commandCopy.style.transform = `translate3d(0, ${progress * -48}px, 0)`;
-        }
-      }
 
       visibleParallaxImages.forEach((image) => {
         const rect = image.getBoundingClientRect();
@@ -656,10 +644,12 @@
     const coarse = window.matchMedia?.("(pointer: coarse)")?.matches;
     const saveData = navigator.connection?.saveData;
     const cores = navigator.hardwareConcurrency || 4;
-    const memory = navigator.deviceMemory || 4;
+    const memory = navigator.deviceMemory;
     const mobile = width <= 760 || coarse;
     const tablet = width > 760 && width <= 1100 && coarse;
-    const lowPower = saveData || cores <= 4 || memory <= 3 || width <= 420;
+    const lowPower = saveData
+      || width <= 420
+      || (mobile && (cores <= 2 || (typeof memory === "number" && memory <= 2)));
     const particleCount = lowPower
       ? config.particleCountLow
       : mobile

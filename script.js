@@ -1,5 +1,6 @@
 const ADMIN_PASSWORD = "sierrazul";
 const STORAGE_KEY = "sierraAzulPortal";
+const GESTURE_PRIVACY_PROTECTION_ENABLED = false;
 
 const menuButton = document.querySelector(".menu-toggle");
 const navLinks = document.querySelector(".nav-links");
@@ -77,6 +78,7 @@ document.querySelectorAll("[data-edit-image]").forEach((image, index) => {
 });
 
 renderSavedProjects();
+renderSavedTimelineItems();
 buildProjectSliders();
 buildInlinePersonEditors();
 restoreSavedChanges();
@@ -234,6 +236,8 @@ function initMaintenance3DScene() {
   });
 
   const commandCore = new THREE.Group();
+  const towerObjects = [];
+  const accentObjects = [];
   root.add(commandCore);
 
   const coreHeights = (sceneProfile.lowPower ? [2.9, 2.05, 1.55] : [2.9, 2.2, 1.75, 2.45, 1.35]);
@@ -244,11 +248,40 @@ function initMaintenance3DScene() {
     core.position.set(Math.cos(angle) * radius, height / 2, Math.sin(angle) * radius);
     core.rotation.y = -angle + Math.PI / 4;
     commandCore.add(core);
+    towerObjects.push({ mesh: core, baseY: core.position.y, phase: index * 0.7 });
 
     const top = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.06, 0.62), copperMaterial);
     top.position.set(core.position.x, height + 0.05, core.position.z);
     top.rotation.y = core.rotation.y;
     commandCore.add(top);
+    towerObjects.push({ mesh: top, baseY: top.position.y, phase: index * 0.7 + 0.2 });
+
+    if (!sceneProfile.lowPower) {
+      const edge = new THREE.LineSegments(
+        new THREE.EdgesGeometry(core.geometry),
+        new THREE.LineBasicMaterial({
+          color: index % 2 ? 0xf1b684 : 0x7fe7e3,
+          transparent: true,
+          opacity: 0.28,
+        })
+      );
+      edge.position.copy(core.position);
+      edge.rotation.copy(core.rotation);
+      commandCore.add(edge);
+      accentObjects.push({ mesh: edge, baseOpacity: 0.28, phase: index * 0.9 });
+
+      const beam = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.012, 0.012, height + 1.4, 8),
+        new THREE.MeshBasicMaterial({
+          color: index % 2 ? 0xf1b684 : 0x7fe7e3,
+          transparent: true,
+          opacity: 0.22,
+        })
+      );
+      beam.position.set(core.position.x, (height + 1.4) / 2, core.position.z);
+      commandCore.add(beam);
+      accentObjects.push({ mesh: beam, baseOpacity: 0.22, phase: index * 1.1 + 0.4 });
+    }
   });
 
   const progressValues = [0.68, 0.42, 0.25];
@@ -335,11 +368,22 @@ function initMaintenance3DScene() {
     lastRender = time;
 
     const elapsed = clock.getElapsedTime();
-    root.rotation.y = elapsed * 0.15 + pointer.x * 0.28;
-    root.rotation.x = pointer.y * 0.1;
-    commandCore.rotation.y = -elapsed * 0.18;
-    evidenceGroup.rotation.y = elapsed * 0.48;
-    pulseLight.intensity = 7 + Math.sin(elapsed * 2.6) * 2.8;
+    root.rotation.y = elapsed * 0.18 + pointer.x * 0.22;
+    root.rotation.x = Math.sin(elapsed * 0.5) * 0.025 + pointer.y * 0.07;
+    commandCore.rotation.y = -elapsed * 0.24;
+    evidenceGroup.rotation.y = elapsed * 0.58;
+    pulseLight.intensity = 7.5 + Math.sin(elapsed * 2.9) * 3.2;
+    camera.position.x = Math.sin(elapsed * 0.28) * 0.26;
+    camera.position.y = 3.8 + Math.sin(elapsed * 0.42) * 0.12;
+    camera.lookAt(0, 0.75, 0);
+
+    towerObjects.forEach((item) => {
+      item.mesh.position.y = item.baseY + Math.sin(elapsed * 1.4 + item.phase) * 0.045;
+    });
+
+    accentObjects.forEach((item) => {
+      item.mesh.material.opacity = item.baseOpacity + Math.sin(elapsed * 2.2 + item.phase) * 0.08;
+    });
 
     rings.forEach((ring, index) => {
       ring.rotation.z = elapsed * (0.24 + index * 0.12) * (index % 2 ? -1 : 1);
@@ -379,16 +423,18 @@ function getMaintenanceSceneProfile() {
   const coarse = window.matchMedia?.("(pointer: coarse)")?.matches;
   const saveData = navigator.connection?.saveData;
   const cores = navigator.hardwareConcurrency || 4;
-  const memory = navigator.deviceMemory || 4;
+  const memory = navigator.deviceMemory;
   const mobile = width <= 760 || coarse;
-  const lowPower = saveData || cores <= 4 || memory <= 3 || width <= 420;
+  const lowPower = saveData
+    || width <= 420
+    || (mobile && (cores <= 2 || (typeof memory === "number" && memory <= 2)));
 
   return {
     mobile,
     lowPower,
     antialias: !lowPower,
-    pixelRatio: Math.min(window.devicePixelRatio || 1, lowPower ? 1 : mobile ? 1.2 : 1.65),
-    fps: lowPower ? 24 : mobile ? 30 : 48,
+    pixelRatio: Math.min(window.devicePixelRatio || 1, lowPower ? 1 : mobile ? 1.25 : 1.85),
+    fps: lowPower ? 24 : mobile ? 32 : 55,
     gridLimit: lowPower ? 4 : 5,
     gridStep: lowPower ? 2 : 1,
     evidenceCount: lowPower ? 8 : mobile ? 12 : 18,
@@ -1141,6 +1187,8 @@ function setQuotePdf(card, quote) {
 }
 
 (() => {
+  if (!GESTURE_PRIVACY_PROTECTION_ENABLED) return;
+
   let mobileBlurTimer;
   let longTouchTimer;
   const isAppleTouchDevice = /iPad|iPhone|iPod/.test(navigator.userAgent)
@@ -1807,6 +1855,13 @@ function buildAdminPanelTools() {
   });
   adminToolList.appendChild(projectGroup);
 
+  const timelineGroup = createAdminGroup("Cronología: años y trabajos");
+  timelineGroup.appendChild(createAddTimelineTool());
+  document.querySelectorAll(".timeline article").forEach((item) => {
+    timelineGroup.appendChild(createTimelineTool(item));
+  });
+  adminToolList.appendChild(timelineGroup);
+
   const quoteGroup = createAdminGroup("Cotizaciones: PDF por proveedor");
   document.querySelectorAll(".quote-card").forEach((card) => {
     quoteGroup.appendChild(createQuoteTool(card));
@@ -1898,6 +1953,8 @@ function restoreSavedChanges() {
   document.querySelectorAll(".quote-card").forEach((card) => {
     setQuotePdf(card, state[`quote:${card.dataset.quoteId}:pdf`]);
   });
+
+  restoreTimelineChanges();
 }
 
 function wireAdminProjectTools() {
@@ -2002,6 +2059,137 @@ function setProjectName(card, name) {
   card.querySelector("h3").textContent = name || "Proyecto sin nombre";
 }
 
+function renderSavedTimelineItems() {
+  (state.timelineItems || []).forEach((item) => {
+    if (!document.querySelector(`[data-timeline-id="${item.id}"]`)) {
+      appendTimelineItem(item);
+    }
+  });
+}
+
+function createAddTimelineTool() {
+  const tool = document.createElement("div");
+  tool.className = "admin-tool";
+  tool.innerHTML = `
+    <strong>Agregar punto a la cronología</strong>
+    <label>Año o mes <input type="text" data-new-timeline-date placeholder="Ej. Diciembre 2026" /></label>
+    <label>Nombre del trabajo <input type="text" data-new-timeline-title placeholder="Ej. Revisión de bombas" /></label>
+    <label>Descripción <textarea rows="4" data-new-timeline-description placeholder="Describe el alcance, evidencia o avance del trabajo."></textarea></label>
+    <button class="admin-inline-button" type="button" data-add-timeline-item>Sumar a cronología</button>
+  `;
+  return tool;
+}
+
+function createTimelineTool(item) {
+  const id = item.dataset.timelineId;
+  const date = state[`timeline:${id}:date`] || item.querySelector("span")?.textContent.trim() || "";
+  const title = state[`timeline:${id}:title`] || item.querySelector("h3")?.textContent.trim() || "";
+  const description = state[`timeline:${id}:description`] || item.querySelector("p")?.textContent.trim() || "";
+  const tool = document.createElement("div");
+  tool.className = "admin-tool";
+  tool.innerHTML = `
+    <strong>${escapeHtml(date)} · ${escapeHtml(title)}</strong>
+    <label>Año o mes <input type="text" value="${escapeAttribute(date)}" data-admin-timeline-date="${id}" /></label>
+    <label>Nombre del trabajo <input type="text" value="${escapeAttribute(title)}" data-admin-timeline-title="${id}" /></label>
+    <label>Descripción <textarea rows="4" data-admin-timeline-description="${id}">${escapeHtml(description)}</textarea></label>
+  `;
+  return tool;
+}
+
+function wireAdminTimelineTools() {
+  document.querySelector("[data-add-timeline-item]")?.addEventListener("click", () => {
+    const dateInput = document.querySelector("[data-new-timeline-date]");
+    const titleInput = document.querySelector("[data-new-timeline-title]");
+    const descriptionInput = document.querySelector("[data-new-timeline-description]");
+    const date = dateInput?.value.trim() || "Nuevo periodo";
+    const title = titleInput?.value.trim() || "Nuevo trabajo";
+    const description = descriptionInput?.value.trim() || "Trabajo agregado desde el panel de administración.";
+
+    addTimelineItem({ date, title, description });
+
+    if (dateInput) dateInput.value = "";
+    if (titleInput) titleInput.value = "";
+    if (descriptionInput) descriptionInput.value = "";
+  });
+
+  document.querySelectorAll("[data-admin-timeline-date]").forEach((input) => {
+    input.addEventListener("input", () => {
+      updateTimelineItem(input.dataset.adminTimelineDate, "date", input.value);
+    });
+  });
+
+  document.querySelectorAll("[data-admin-timeline-title]").forEach((input) => {
+    input.addEventListener("input", () => {
+      updateTimelineItem(input.dataset.adminTimelineTitle, "title", input.value);
+    });
+  });
+
+  document.querySelectorAll("[data-admin-timeline-description]").forEach((input) => {
+    input.addEventListener("input", () => {
+      updateTimelineItem(input.dataset.adminTimelineDescription, "description", input.value);
+    });
+  });
+}
+
+function addTimelineItem(item) {
+  const timelineItem = {
+    id: `custom-timeline-${Date.now()}`,
+    date: item.date,
+    title: item.title,
+    description: item.description,
+  };
+
+  state.timelineItems = [...(state.timelineItems || []), timelineItem];
+  state[`timeline:${timelineItem.id}:date`] = timelineItem.date;
+  state[`timeline:${timelineItem.id}:title`] = timelineItem.title;
+  state[`timeline:${timelineItem.id}:description`] = timelineItem.description;
+
+  appendTimelineItem(timelineItem);
+  buildAdminPanelTools();
+  saveState();
+}
+
+function appendTimelineItem(item) {
+  const timeline = document.querySelector(".timeline");
+  if (!timeline) return;
+
+  const article = document.createElement("article");
+  article.dataset.timelineId = item.id;
+  article.dataset.defaultDate = item.date || "Nuevo periodo";
+  article.dataset.defaultTitle = item.title || "Nuevo trabajo";
+  article.dataset.defaultDescription = item.description || "Trabajo agregado desde el panel de administración.";
+  article.innerHTML = `
+    <span>${escapeHtml(article.dataset.defaultDate)}</span>
+    <h3>${escapeHtml(article.dataset.defaultTitle)}</h3>
+    <p>${escapeHtml(article.dataset.defaultDescription)}</p>
+  `;
+  timeline.appendChild(article);
+}
+
+function updateTimelineItem(id, field, value) {
+  const item = document.querySelector(`[data-timeline-id="${id}"]`);
+  if (!item) return;
+
+  state[`timeline:${id}:${field}`] = value;
+  restoreTimelineItem(item);
+  saveState();
+}
+
+function restoreTimelineChanges() {
+  document.querySelectorAll(".timeline article").forEach(restoreTimelineItem);
+}
+
+function restoreTimelineItem(item) {
+  const id = item.dataset.timelineId;
+  const date = state[`timeline:${id}:date`] || item.dataset.defaultDate || item.querySelector("span")?.textContent.trim() || "Nuevo periodo";
+  const title = state[`timeline:${id}:title`] || item.dataset.defaultTitle || item.querySelector("h3")?.textContent.trim() || "Nuevo trabajo";
+  const description = state[`timeline:${id}:description`] || item.dataset.defaultDescription || item.querySelector("p")?.textContent.trim() || "";
+
+  item.querySelector("span").textContent = date;
+  item.querySelector("h3").textContent = title;
+  item.querySelector("p").textContent = description;
+}
+
 function buildAdminPanelTools() {
   if (!adminToolList) return;
   adminToolList.innerHTML = "";
@@ -2020,6 +2208,13 @@ function buildAdminPanelTools() {
   });
   adminToolList.appendChild(projectGroup);
 
+  const timelineGroup = createAdminGroup("Cronología: años y trabajos");
+  timelineGroup.appendChild(createAddTimelineTool());
+  document.querySelectorAll(".timeline article").forEach((item) => {
+    timelineGroup.appendChild(createTimelineTool(item));
+  });
+  adminToolList.appendChild(timelineGroup);
+
   const quoteGroup = createAdminGroup("Cotizaciones: PDF por proveedor");
   document.querySelectorAll(".quote-card").forEach((card) => {
     quoteGroup.appendChild(createQuoteTool(card));
@@ -2034,6 +2229,7 @@ function buildAdminPanelTools() {
 
   wireAdminPersonTools();
   wireAdminProjectTools();
+  wireAdminTimelineTools();
   wireAdminQuoteTools();
   wireImageReplacement();
 }
